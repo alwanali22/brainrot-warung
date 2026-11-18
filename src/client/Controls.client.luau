@@ -1,11 +1,8 @@
--- Controls.client: player input for BRAINROT WARUNG, bound through
--- ContextActionService. Roblox's default camera scripts swallow the Left
--- and Right arrow keys before UserInputService.InputBegan ever sees them
--- (RULES.txt), so movement is bound here at high priority and sunk, and
--- the game actions (slap, lock, rebirth) are bound the same way. The E
--- key is deliberately NOT bound: the buy ProximityPrompt owns it.
--- Movement itself is the default character controller's job; this script
--- only feeds it a direction, computed from the camera each frame.
+-- Controls.client: player input, bound through ContextActionService.
+-- Roblox's default camera scripts swallow the Left/Right arrow keys before
+-- InputBegan ever sees them, so movement binds here at high priority and
+-- sunk; F = slap, L = lock, R = rebirth. E is NOT bound: the buy prompt owns it.
+-- This script only feeds the default controller a camera-relative direction.
 
 local ContextActionService = game:GetService("ContextActionService")
 local Players = game:GetService("Players")

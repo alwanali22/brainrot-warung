@@ -1,6 +1,5 @@
--- Rebirth: "Naik Kelas Warung". Trade cash and every brainrot on your
--- plot for a permanent +0.5x income multiplier and a new base skin. The
--- cost grows with each rebirth, so the ladder never runs out.
+-- Rebirth: "Naik Kelas Warung". Trade cash and every brainrot on your plot
+-- for a permanent +0.5x income multiplier and a new base skin.
 
 local Config = require(game:GetService("ReplicatedStorage").Shared.Config)
 local State = require(script.Parent.State)

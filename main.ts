@@ -3,7 +3,8 @@
 // The player buys named brainrot characters off the moving "Etalase Berjalan"
 // conveyor, places them on their warung plot, earns money per second, steals
 // from other players (base lock + slap defence), rebirths to climb the warung
-// ladder, and survives random events (Hujan Dodol, Tung Tung Rush, Satpol Raid).
+// ladder, and survives random events (Hujan Dodol, Tung Tung Rush, Satpol Raid,
+// Tamu Istimewa), with rare mutation variants (Emas, Berlian, Pelangi).
 // The game is this directory's Rojo project, built into game.rbxl with
 // `rojo build default.project.json --output game.rbxl`, and this program
 // hands it in. It copies game.rbxl, src/, screenshots/ and PLAY.json from beside this file to /output and

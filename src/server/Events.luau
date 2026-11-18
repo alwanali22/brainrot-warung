@@ -1,11 +1,12 @@
--- Events: one random market event every ~90 seconds. Three kinds, each
--- real in the code: Hujan Dodol doubles income, Tung Tung Rush floods the
--- conveyor with rare brainrots, and Satpol Raid sweeps the street — anyone
--- caught outside their own plot loses 10% of their cash.
+-- Events: one random market event every ~90 seconds. Four kinds, each real
+-- in the code: Hujan Dodol doubles income, Tung Tung Rush floods the conveyor
+-- with rare brainrots, Satpol Raid sweeps the street (caught outside your plot,
+-- you lose 10% of your cash), and Tamu Istimewa walks a Secret down the belt.
 
 local Players = game:GetService("Players")
 local Config = require(game:GetService("ReplicatedStorage").Shared.Config)
 local BrainrotData = require(game:GetService("ReplicatedStorage").Shared.BrainrotData)
+local Mutations = require(game:GetService("ReplicatedStorage").Shared.Mutations)
 local State = require(script.Parent.State)
 local Factory = require(script.Parent.BrainrotFactory)
 local Plots = require(script.Parent.Plots)
@@ -68,32 +69,51 @@ local function hujanDodol()
 	end)
 end
 
+-- Spawn one brainrot on the belt at z (shared by the rush and the guest:
+-- one roll, one model, one buy prompt, one conveyor record).
+local function spawnBeltBrainrot(char, z)
+	local mutation = Mutations.rollMutation()
+	local id = State.nextId()
+	local position = Vector3.new(Config.ConveyorX, 1.2, z)
+	local model = Factory.buildCharacter(char, position, mutation)
+	model.Parent = workspace
+	local prompt = Factory.attachBuyPrompt(model, id, char.price)
+	prompt.Triggered:Connect(function(player)
+		require(script.Parent.Conveyor).buyBrainrot(player, id)
+	end)
+	State.Conveyor[id] = {
+		id = id, charKey = char.key, name = char.name, tier = char.tier,
+		price = char.price, income = Mutations.mutatedIncome(char, mutation),
+		mutation = mutation, model = model,
+		owner = nil, plotId = nil, slotIndex = nil, carriedBy = nil,
+		z = z,
+	}
+end
+
 -- Tung Tung Rush: rare spawns flood the conveyor for 60 seconds, and three
 -- rare brainrots appear on the belt at once.
 local function tungTungRush()
 	State.RushActive = true
 	announce("TUNG TUNG RUSH! Brainrot langka membanjiri etalase!", Color3.fromRGB(80, 230, 180))
 	for _ = 1, 3 do
-		local char = BrainrotData.pickCharacter(true)
-		local id = State.nextId()
-		local position = Vector3.new(Config.ConveyorX, 1.2, Config.ConveyorZ0 - 12)
-		local model = Factory.buildCharacter(char, position)
-		model.Parent = workspace
-		local prompt = Factory.attachBuyPrompt(model, id, char.price)
-		prompt.Triggered:Connect(function(player)
-			require(script.Parent.Conveyor).buyBrainrot(player, id)
-		end)
-		State.Conveyor[id] = {
-			id = id, charKey = char.key, name = char.name, tier = char.tier,
-			price = char.price, income = char.income, model = model,
-			owner = nil, plotId = nil, slotIndex = nil, carriedBy = nil,
-			z = Config.ConveyorZ0 - 12,
-		}
+		spawnBeltBrainrot(BrainrotData.pickCharacter(true), Config.ConveyorZ0 - 12)
 	end
 	task.delay(Config.RushDuration, function()
 		State.RushActive = false
 		clearAnnouncement()
 	end)
+end
+
+-- Tamu Istimewa: one Secret-tier brainrot walks the belt alone, once.
+local function tamuIstimewa()
+	announce("TAMU ISTIMEWA! Brainrot Secret muncul di etalase!", Color3.fromRGB(80, 230, 180))
+	local secrets = {}
+	for _, char in ipairs(BrainrotData.Characters) do
+		if char.tier == "Secret" then
+			table.insert(secrets, char)
+		end
+	end
+	spawnBeltBrainrot(secrets[math.random(1, #secrets)], Config.ConveyorZ0 - 12)
 end
 
 -- Satpol Raid: 15 seconds to run home, then the sweep takes 10% of the
@@ -118,7 +138,7 @@ local function satpolRaid()
 	end)
 end
 
-local EVENT_PICKERS = { hujanDodol, tungTungRush, satpolRaid }
+local EVENT_PICKERS = { hujanDodol, tungTungRush, satpolRaid, tamuIstimewa }
 
 function Events.start()
 	task.spawn(function()

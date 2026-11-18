@@ -1,11 +1,11 @@
--- Conveyor: the "Etalase Berjalan". Brainrots spawn at the north end of the
--- belt, parade south past the stalls, and despawn at the south end. A
--- player buys one with the ProximityPrompt (E) on its model: the server
--- checks distance, cash and a free plot slot before the sale.
+-- Conveyor: the "Etalase Berjalan". Brainrots spawn north, parade south past
+-- the stalls, despawn at the end; buying (ProximityPrompt E) checks distance,
+-- cash and a free plot slot first.
 
 local RunService = game:GetService("RunService")
 local Config = require(game:GetService("ReplicatedStorage").Shared.Config)
 local BrainrotData = require(game:GetService("ReplicatedStorage").Shared.BrainrotData)
+local Mutations = require(game:GetService("ReplicatedStorage").Shared.Mutations)
 local State = require(script.Parent.State)
 local Factory = require(script.Parent.BrainrotFactory)
 local Plots = require(script.Parent.Plots)
@@ -24,9 +24,10 @@ local function spawnOne()
 		return -- Satpol Raid halts the market: nothing new arrives.
 	end
 	local char = BrainrotData.pickCharacter(State.RushActive)
+	local mutation = Mutations.rollMutation()
 	local id = State.nextId()
 	local position = Vector3.new(Config.ConveyorX, 1.2, Config.ConveyorZ0)
-	local model = Factory.buildCharacter(char, position)
+	local model = Factory.buildCharacter(char, position, mutation)
 	model.Parent = workspace
 	local prompt = Factory.attachBuyPrompt(model, id, char.price)
 	prompt.Triggered:Connect(function(player)
@@ -38,7 +39,8 @@ local function spawnOne()
 		name = char.name,
 		tier = char.tier,
 		price = char.price,
-		income = char.income,
+		income = Mutations.mutatedIncome(char, mutation),
+		mutation = mutation,
 		model = model,
 		owner = nil,
 		plotId = nil,

@@ -1,7 +1,5 @@
--- init.server: wiring for BRAINROT WARUNG. Builds the world, creates the
--- RemoteEvents, hands each joining player a plot and a starting wallet,
--- and starts the conveyor, the economy tick, stealing and the event clock.
--- All game state lives in State; this file only connects the pieces.
+-- init.server: wiring for BRAINROT WARUNG — world, RemoteEvents, player
+-- plots and wallets, then starts the conveyor, economy, steal, events.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")

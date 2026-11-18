@@ -22,17 +22,19 @@ publish pertama + screenshot asli + icon/thumbnail + submit menunggu sesi Studio
 Aturan emas RULES: "What a screenshot shows counts as made when the scripts or the
 Place block account for it." — jadi tiap mekanik HARUS ada di kode, bukan cuma di gambar.
 
-## 2. Posisi board (live, 18 Nov 2026 ~08:10 WIB)
+## 2. Posisi board (live, 18 Nov 2026 ~09:0x WIB)
 
 - 22 entry valid. Rank 1: sznbased "Brainrot Bay — Tsunami Steal" 996521.
-  Rank 10: quiet-raven-90 "Brainrot Bash" 994054. Rank 20: cx1twov 989508.
-- Rate sangat padat (rank 1–20 hanya selisih ~0,7 poin): perbedaan kecil di kriteria
+  Rank 10: musrik "Musrik Brainrot Bazaar - 14 original brainrots, steal, lock,
+  tsunami" 994054. Rank 20: cx1twov 989508.
+- Rate sangat padat (rank 1–10 hanya selisih ~0,25 poin): perbedaan kecil di kriteria
   1–3 memutuskan menang/kalah; tidak ada ruang untuk mekanik setengah jadi.
 - Judul top-10 didominasi klon "Brainrot Bay / Bazaar / Tsunami" — hampir semua
   meniru Steal a Brainrot mentah-mentah dengan tema pantai/tsunami yang sama.
 - Celah diferensiasi: **setting dan identitas visual yang berbeda** (pasar malam/warung
-  Indonesia, bukan pantai generik) + **cast 12 karakter** (lebih banyak dari kebanyakan
-  klon) + **tiga event acak yang berbeda fungsi** (income, spawn, hazard) + rebirth
+  Indonesia, bukan pantai generik) + **cast 16 karakter** (lebih banyak dari rank 10
+  yang punya 14) + **sistem mutasi** (Emas/Berlian/Pelangi, x2/x3/x5) + **empat event
+  acak yang berbeda fungsi** (income, spawn, hazard, Secret) + rebirth
   yang mengubah tampilan base.
 
 ## 3. Konsep: BRAINROT WARUNG — Pasar Brainrot
@@ -49,17 +51,19 @@ Progression: **rebirth "Naik Kelas Warung"** (reset cash + brainrot → multipli
 Kenapa konsep ini menang di kriteria juri:
 - K1: loop penuh terlihat — conveyor + beli + plot + $/detik menetes di HUD + tier
   berikutnya terpampang di etalase. Semua elemen loop ada di satu frame screenshot.
-- K2: 12 karakter Italian-brainrot bernama, 7 tier rarity, tiap model 3D dibangun dari
-  Part + label BillboardGui (nama, rarity berwarna, $/detik) yang terbaca dari jauh.
-- K3: steal + lock 30 detik + slap + 3 event (Hujan Dodol = income 2x; Tung Tung Rush =
-  spawn langka naik; Satpol Raid = hazard, pulang ke plot atau kehilangan 10% cash) +
+- K2: 16 karakter Italian-brainrot bernama, 7 tier rarity, tiap model 3D dibangun dari
+  Part + label BillboardGui (nama, rarity berwarna, $/detik) yang terbaca dari jauh;
+  mutasi langka (Emas x2, Berlian x3, Pelangi x5) memberi badge ★ dan income lebih.
+- K3: steal + lock 30 detik + slap + 4 event (Hujan Dodol = income 2x; Tung Tung Rush =
+  spawn langka naik; Satpol Raid = hazard, pulang ke plot atau kehilangan 10% cash;
+  Tamu Istimewa = satu Secret jalan di etalase) +
   rebirth + upgrade slot. Semua nyata di kode server, bukan teks pajangan.
 - K4: dunia 3D malam (lampu, gerobak, pohon, gapura pasar), HUD besar yang terbaca
   saat diperkecil judge (screenshot digabung jadi satu lembar, cover 768x480).
 - K5: modul satu tugas satu modul; satu state store (server/State); RemoteEvents
   sebagai satu-satunya jembatan client-server.
 
-## 4. Cast — 12 karakter, 7 tier
+## 4. Cast — 16 karakter, 7 tier
 
 | # | Karakter | Tier | Harga | $/detik |
 |---|----------|------|-------|---------|
@@ -68,13 +72,21 @@ Kenapa konsep ini menang di kriteria juri:
 | 3 | Trippi Troppi | Rare | $400 | $7 |
 | 4 | Frigo Camelo | Rare | $900 | $15 |
 | 5 | Ballerina Cappuccina | Epic | $2.000 | $30 |
-| 6 | Boneca Ambalabu | Epic | $4.500 | $60 |
-| 7 | Tralalero Tralala | Legendary | $10.000 | $130 |
-| 8 | Bombardiro Crocodilo | Legendary | $22.000 | $260 |
-| 9 | Giraffa Celeste | Mythic | $50.000 | $550 |
-| 10 | La Vaca Saturno Saturnita | Mythic | $110.000 | $1.100 |
-| 11 | Pot Hotspot | Brainrot God | $250.000 | $2.400 |
-| 12 | Tung Tung Tung Sahur | Secret | $600.000 | $6.000 |
+| 6 | Cappuccino Assassino | Epic | $3.000 | $45 |
+| 7 | Boneca Ambalabu | Epic | $4.500 | $60 |
+| 8 | Tralalero Tralala | Legendary | $10.000 | $130 |
+| 9 | Brr Brr Patapim | Legendary | $16.000 | $190 |
+| 10 | Bombardiro Crocodilo | Legendary | $22.000 | $260 |
+| 11 | Giraffa Celeste | Mythic | $50.000 | $550 |
+| 12 | Frulli Frulla | Mythic | $75.000 | $800 |
+| 13 | La Vaca Saturno Saturnita | Mythic | $110.000 | $1.100 |
+| 14 | Pot Hotspot | Brainrot God | $250.000 | $2.400 |
+| 15 | Tung Tung Tung Sahur | Secret | $600.000 | $6.000 |
+| 16 | Glorbo Fruttodrillo | Secret | $900.000 | $9.000 |
+
+Mutasi (shared/Mutations): tiap spawn di conveyor me-roll mutasi — Emas x2 (8%),
+Berlian x3 (3%), Pelangi x5 (1%). Mutasi menambah badge "★ EMAS/Berlian/Pelangi" di
+label rarity (warna mutasi) dan mengalikan $/detik brainrot itu.
 
 Tiap karakter dibangun 3D dari Part primitif (badan + kepala + aksesori khas, mis.
 hiu Tralalero bersirip, buaya Bombardiro bersayap, Ballerina bertutu) + BillboardGui
@@ -100,7 +112,8 @@ Open Cloud terpenuhi.
 - **Event acak (server/Events)**: tiap ~90 detik salah satu dari Hujan Dodol (income
   2x 30 detik + dodol jatuh dari langit), Tung Tung Rush (spawn langka naik 60 detik +
   3 spawn langka langsung), Satpol Raid (peringatan 15 detik, conveyor jeda, pemain di
-  luar plot kehilangan 10% cash).
+  luar plot kehilangan 10% cash), Tamu Istimewa (satu brainrot tier Secret jalan
+  sendiri di etalase).
 - **Kontrol (client/Controls)**: gerakan pakai ContextActionService (arrow keys + WASD,
   prioritas tinggi + sink — script kamera default Roblox mengambil alih arrow keys
   untuk InputBegan, jadi binding lewat ContextActionService adalah jalurnya, sesuai
@@ -114,7 +127,8 @@ Open Cloud terpenuhi.
 
 ```
 src/shared/Config.luau        — konstanta, nama Remote, tuning event/rebirth
-src/shared/BrainrotData.luau  — 12 karakter + 7 tier + bobot spawn
+src/shared/BrainrotData.luau  — 16 karakter + 7 tier + bobot spawn
+src/shared/Mutations.luau     — mutasi Emas/Berlian/Pelangi (x2/x3/x5) + roll
 src/server/init.server.luau   — wiring: remotes, player join/leave, loop utama
 src/server/World.luau         — bangun dunia 3D saat runtime (jalan, warung, lampu, gerobak)
 src/server/State.luau         — SATU state store semua pemain
@@ -124,7 +138,7 @@ src/server/Plots.luau         — plot, slot, penempatan, papan nama, upgrade
 src/server/Economy.luau       — tick income 1 detik, jual
 src/server/Steal.luau         — curi, bawa, slap, lock
 src/server/Rebirth.luau       — syarat, reset, multiplier, skin base
-src/server/Events.luau        — scheduler event acak + 3 event
+src/server/Events.luau        — scheduler event acak + 4 event
 src/client/HUD.client.luau    — ScreenGui: cash, income, banner, tombol
 src/client/Controls.client.luau — ContextActionService: gerak + F/L/R
 ```

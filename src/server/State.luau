@@ -1,9 +1,6 @@
 -- State: the ONE state store of BRAINROT WARUNG. Every module reads and
 -- writes player state through here, never through its own tables, so the
 -- economy, stealing, rebirth and events can never disagree about a player.
--- A player record: cash, rebirths, multiplier, plotId, brainrots (id -> item),
--- lockUntil, lockCooldownUntil, stealCooldownUntil, slapCooldownUntil,
--- slotUpgrades, carrying (stolen item id or nil).
 
 local Players = game:GetService("Players")
 local Config = require(game:GetService("ReplicatedStorage").Shared.Config)

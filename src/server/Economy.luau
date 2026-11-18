@@ -1,7 +1,5 @@
--- Economy: the one-second income tick and selling. Every brainrot on a
--- player's plot pays its money per second, multiplied by the player's
--- rebirth multiplier and the current event multiplier. The tick is the
--- only place cash is created; buying, upgrades and rebirth only spend it.
+-- Economy: the one-second income tick and selling. The tick is the only
+-- place cash is created; buying, upgrades and rebirth only spend it.
 
 local Players = game:GetService("Players")
 local Config = require(game:GetService("ReplicatedStorage").Shared.Config)

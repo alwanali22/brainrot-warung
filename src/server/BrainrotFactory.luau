@@ -1,10 +1,10 @@
 -- BrainrotFactory: builds a brainrot's 3D model from primitive Parts only
--- (Block, Ball, Wedge, Cylinder) plus a BillboardGui label with its name,
--- rarity and money per second. No unions, meshes or SurfaceAppearance, so
--- the place can be published through Roblox Open Cloud. Every part is
--- Anchored: the server moves models by setting CFrame, never by physics.
+-- (Block, Ball, Wedge, Cylinder) + a BillboardGui label (name, rarity,
+-- $/second). No unions/meshes, so the place publishes via Open Cloud.
+-- Every part is Anchored: the server moves models by CFrame, never physics.
 
 local BrainrotData = require(game:GetService("ReplicatedStorage").Shared.BrainrotData)
+local Mutations = require(game:GetService("ReplicatedStorage").Shared.Mutations)
 
 local Factory = {}
 
@@ -16,8 +16,9 @@ local SHAPES = {
 }
 
 -- Build one character model at `position`, facing +Z (down the conveyor).
--- Returns the Model; its PrimaryPart is the first recipe part.
-function Factory.buildCharacter(char, position)
+-- Returns the Model; its PrimaryPart is the first recipe part. `mutation`
+-- (nil or a Mutations name) recolours the rarity label and multiplies income.
+function Factory.buildCharacter(char, position, mutation)
 	local model = Instance.new("Model")
 	model.Name = char.name
 
@@ -42,6 +43,19 @@ function Factory.buildCharacter(char, position)
 	model.PrimaryPart = primary
 
 	-- The readable label: name, rarity (in the tier colour), $/second.
+	-- A mutation appends its badge (e.g. "Legendary ★ EMAS"), recolours
+	-- the rarity line, and multiplies the shown $/second.
+	local rarityText = char.tier
+	local rarityColor = BrainrotData.tierColor(char.tier)
+	local income = char.income
+	if mutation then
+		local m = Mutations.byName(mutation)
+		if m then
+			rarityText = char.tier .. " " .. Mutations.tagText(mutation)
+			rarityColor = m.color
+			income = Mutations.mutatedIncome(char, mutation)
+		end
+	end
 	local billboard = Instance.new("BillboardGui")
 	billboard.Name = "BrainrotLabel"
 	billboard.Size = UDim2.fromOffset(220, 90)
@@ -66,8 +80,8 @@ function Factory.buildCharacter(char, position)
 	rarityLabel.Size = UDim2.new(1, 0, 0.3, 0)
 	rarityLabel.Position = UDim2.new(0, 0, 0.4, 0)
 	rarityLabel.BackgroundTransparency = 1
-	rarityLabel.Text = char.tier
-	rarityLabel.TextColor3 = BrainrotData.tierColor(char.tier)
+	rarityLabel.Text = rarityText
+	rarityLabel.TextColor3 = rarityColor
 	rarityLabel.TextScaled = true
 	rarityLabel.Font = Enum.Font.GothamBold
 	rarityLabel.TextStrokeTransparency = 0.2
@@ -78,7 +92,7 @@ function Factory.buildCharacter(char, position)
 	incomeLabel.Size = UDim2.new(1, 0, 0.3, 0)
 	incomeLabel.Position = UDim2.new(0, 0, 0.7, 0)
 	incomeLabel.BackgroundTransparency = 1
-	incomeLabel.Text = "$" .. tostring(char.income) .. "/dtk"
+	incomeLabel.Text = "$" .. tostring(income) .. "/dtk"
 	incomeLabel.TextColor3 = Color3.fromRGB(120, 255, 120)
 	incomeLabel.TextScaled = true
 	incomeLabel.Font = Enum.Font.GothamBold

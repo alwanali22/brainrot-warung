@@ -1,8 +1,7 @@
--- Steal: the threat of BRAINROT WARUNG. Touch a brainrot on another
--- player's plot and you carry it off; reach your own plot and it is yours.
--- The victim's plot locks for 30 seconds after a theft, a player can lock
--- their own plot manually (L, 60s cooldown), and a slap (F) knocks a thief
--- down and drops whatever they are carrying.
+-- Steal: the threat of BRAINROT WARUNG. Touch a brainrot on another player's
+-- plot and you carry it off; reach your own plot and it is yours. The victim's
+-- plot locks 30s after a theft, a player can lock their own plot (L, 60s
+-- cooldown), and a slap (F) knocks a thief down and drops the goods.
 
 local Players = game:GetService("Players")
 local Config = require(game:GetService("ReplicatedStorage").Shared.Config)

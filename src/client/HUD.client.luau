@@ -1,11 +1,11 @@
--- HUD.client: the ScreenGui of BRAINROT WARUNG. Cash and income sit big
--- and centred (clear of the top-left corner, where Roblox's own menu
--- buttons sit), the event banner drops below them, and the Rebirth, Lock
--- and Slot buttons sit along the bottom. State arrives on the StateUpdate
--- RemoteEvent; every button fires the matching RemoteEvent.
+-- HUD.client: the ScreenGui of BRAINROT WARUNG. Cash/income big and centred
+-- (clear of Roblox's own top-left menu buttons); state arrives on StateUpdate.
+-- C = Color3.fromRGB.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local C = Color3.fromRGB
 
 local player = Players.LocalPlayer
 local remotes = ReplicatedStorage:WaitForChild("Remotes")
@@ -40,7 +40,7 @@ local function button(name, parent, size, pos, text, color)
 	b.BorderSizePixel = 0
 	b.Text = text
 	b.TextSize = 20
-	b.TextColor3 = Color3.fromRGB(255, 255, 255)
+	b.TextColor3 = C(255, 255, 255)
 	b.Font = Enum.Font.GothamBold
 	b.Parent = parent
 	local corner = Instance.new("UICorner")
@@ -55,7 +55,7 @@ cashPanel.Name = "CashPanel"
 cashPanel.AnchorPoint = Vector2.new(0.5, 0)
 cashPanel.Position = UDim2.new(0.5, 0, 0, 12)
 cashPanel.Size = UDim2.fromOffset(360, 92)
-cashPanel.BackgroundColor3 = Color3.fromRGB(30, 25, 20)
+cashPanel.BackgroundColor3 = C(30, 25, 20)
 cashPanel.BackgroundTransparency = 0.25
 cashPanel.BorderSizePixel = 0
 cashPanel.Parent = gui
@@ -64,41 +64,41 @@ cashCorner.CornerRadius = UDim.new(0, 12)
 cashCorner.Parent = cashPanel
 
 local cashLabel = label("Cash", cashPanel, UDim2.new(1, 0, 0.55, 0),
-	UDim2.new(0, 0, 0, 4), 40, Color3.fromRGB(255, 220, 90))
+	UDim2.new(0, 0, 0, 4), 40, C(255, 220, 90))
 cashLabel.Text = "$100"
 local incomeLabel = label("Income", cashPanel, UDim2.new(1, 0, 0.4, 0),
-	UDim2.new(0, 0, 0.58, 0), 20, Color3.fromRGB(120, 255, 120))
+	UDim2.new(0, 0, 0.58, 0), 20, C(120, 255, 120))
 incomeLabel.Text = "+$0/dtk"
 
 -- Rebirth + multiplier, top right.
 local rebirthLabel = label("Rebirths", gui, UDim2.fromOffset(260, 34),
-	UDim2.new(1, -276, 0, 14), 20, Color3.fromRGB(255, 180, 90))
+	UDim2.new(1, -276, 0, 14), 20, C(255, 180, 90))
 rebirthLabel.TextXAlignment = Enum.TextXAlignment.Right
 rebirthLabel.Text = "Naik Kelas: 0  (x1.0)"
 
 -- Event banner, below the cash panel.
 local banner = label("EventBanner", gui, UDim2.new(0.7, 0, 0, 44),
-	UDim2.new(0.15, 0, 0, 116), 26, Color3.fromRGB(255, 220, 90))
+	UDim2.new(0.15, 0, 0, 116), 26, C(255, 220, 90))
 banner.Text = "Selamat datang di PASAR BRAINROT!"
 
 -- Plot status, bottom left.
 local plotLabel = label("Plot", gui, UDim2.fromOffset(300, 60),
-	UDim2.new(0, 16, 1, -76), 20, Color3.fromRGB(255, 255, 255))
+	UDim2.new(0, 16, 1, -76), 20, C(255, 255, 255))
 plotLabel.TextXAlignment = Enum.TextXAlignment.Left
 plotLabel.Text = "Warungmu: 0/4 brainrot"
 
 -- Controls hint, bottom centre.
 local hint = label("Hint", gui, UDim2.new(0.6, 0, 0, 30),
-	UDim2.new(0.2, 0, 1, -34), 16, Color3.fromRGB(230, 230, 230))
+	UDim2.new(0.2, 0, 1, -34), 16, C(230, 230, 230))
 hint.Text = "WASD / Panah: jalan   E: beli   F: tampar   L: kunci base   R: naik kelas"
 
 -- Buttons, bottom right.
 local rebirthButton = button("RebirthButton", gui, UDim2.fromOffset(150, 48),
-	UDim2.new(1, -486, 1, -64), "NAIK KELAS (R)", Color3.fromRGB(180, 90, 220))
+	UDim2.new(1, -486, 1, -64), "NAIK KELAS (R)", C(180, 90, 220))
 local lockButton = button("LockButton", gui, UDim2.fromOffset(150, 48),
-	UDim2.new(1, -322, 1, -64), "KUNCI BASE (L)", Color3.fromRGB(60, 120, 220))
+	UDim2.new(1, -322, 1, -64), "KUNCI BASE (L)", C(60, 120, 220))
 local slotButton = button("SlotButton", gui, UDim2.fromOffset(150, 48),
-	UDim2.new(1, -158, 1, -64), "+2 SLOT", Color3.fromRGB(60, 180, 90))
+	UDim2.new(1, -158, 1, -64), "+2 SLOT", C(60, 180, 90))
 
 rebirthButton.MouseButton1Click:Connect(function()
 	remotes.Rebirth:FireServer()

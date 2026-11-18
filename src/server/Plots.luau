@@ -1,20 +1,19 @@
--- Plots: the eight warung plots. Owns the geometry of a plot (slot
--- positions, owner sign, lock shield, rebirth skin) and the bookkeeping of
--- putting a brainrot on a slot, taking one off, and sending a stolen one
--- home. The economy never touches plot geometry; it asks Plots.
+-- Plots: the eight warung plots (slot geometry, owner sign, lock shield,
+-- rebirth skin) and putting a brainrot on a slot / sending a stolen one home.
 
 local Config = require(game:GetService("ReplicatedStorage").Shared.Config)
 local State = require(script.Parent.State)
 local Factory = require(script.Parent.BrainrotFactory)
 
+local V = Vector3.new
+
 local Plots = {}
 
--- Slot offsets on a plot pad (2 rows x 3 columns, room for 6; upgrades
--- add a second row of positions through the same grid, capped at 8).
+-- Slot offsets on a plot pad (2 rows x 3 columns + 2, room for 8).
 local SLOT_OFFSETS = {
-	Vector3.new(-3.5, 0, 1.5), Vector3.new(0, 0, 1.5), Vector3.new(3.5, 0, 1.5),
-	Vector3.new(-3.5, 0, 3.5), Vector3.new(0, 0, 3.5), Vector3.new(3.5, 0, 3.5),
-	Vector3.new(-3.5, 0, -1.5), Vector3.new(3.5, 0, -1.5),
+	V(-3.5, 0, 1.5), V(0, 0, 1.5), V(3.5, 0, 1.5),
+	V(-3.5, 0, 3.5), V(0, 0, 3.5), V(3.5, 0, 3.5),
+	V(-3.5, 0, -1.5), V(3.5, 0, -1.5),
 }
 
 function Plots.init()
@@ -41,7 +40,7 @@ end
 function Plots.slotPosition(plotId, slotIndex)
 	local plot = State.Plots[plotId]
 	local offset = SLOT_OFFSETS[slotIndex] or SLOT_OFFSETS[1]
-	return Vector3.new(plot.centre.X + offset.X, 1.2, plot.centre.Z + offset.Z)
+	return V(plot.centre.X + offset.X, 1.2, plot.centre.Z + offset.Z)
 end
 
 function Plots.freeSlot(record)
@@ -57,8 +56,8 @@ function Plots.freeSlot(record)
 	return nil
 end
 
--- Put an owned item on its owner's plot (used by buying and by stealing
--- home). Returns true, or false when the plot is full.
+-- Put an owned item on its owner's plot (buying and stealing home).
+-- Returns true, or false when the plot is full.
 function Plots.placeOnPlot(item, owner)
 	local record = State.get(owner)
 	if not record then

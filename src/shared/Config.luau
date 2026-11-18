@@ -1,6 +1,8 @@
 -- Config: single source of tuning for BRAINROT WARUNG (Pasar Brainrot).
--- Every number the game balances on lives here, so the judge (and we) can
--- read the whole economy without hunting through modules.
+-- Every number the game balances on lives here. V = Vector3.new, C = Color3.fromRGB.
+
+local V = Vector3.new
+local C = Color3.fromRGB
 
 local Config = {}
 
@@ -28,12 +30,12 @@ Config.PlotCount = 8
 Config.PlotSize = 12
 -- Plot centres: 4 west (x = -16), 4 east (x = 20), z = -45, -15, 15, 45.
 Config.PlotPositions = {
-	Vector3.new(-16, 0, -45), Vector3.new(-16, 0, -15),
-	Vector3.new(-16, 0, 15), Vector3.new(-16, 0, 45),
-	Vector3.new(20, 0, -45), Vector3.new(20, 0, -15),
-	Vector3.new(20, 0, 15), Vector3.new(20, 0, 45),
+	V(-16, 0, -45), V(-16, 0, -15),
+	V(-16, 0, 15), V(-16, 0, 45),
+	V(20, 0, -45), V(20, 0, -15),
+	V(20, 0, 15), V(20, 0, 45),
 }
-Config.SpawnPoint = Vector3.new(0, 2, 56)
+Config.SpawnPoint = V(0, 2, 56)
 
 -- Economy.
 Config.StartCash = 100
@@ -56,10 +58,10 @@ Config.RebirthMinBrainrots = 3
 Config.RebirthMultiplierStep = 0.5
 -- Base skins, one per rebirth tier (pad colour, stall colour, name).
 Config.RebirthSkins = {
-	{ pad = Color3.fromRGB(139, 94, 52), stall = Color3.fromRGB(196, 132, 62), name = "Warung Kayu" },
-	{ pad = Color3.fromRGB(150, 70, 60), stall = Color3.fromRGB(210, 110, 80), name = "Warung Bata" },
-	{ pad = Color3.fromRGB(60, 90, 180), stall = Color3.fromRGB(90, 220, 255), name = "Warung Neon" },
-	{ pad = Color3.fromRGB(120, 70, 160), stall = Color3.fromRGB(255, 210, 90), name = "Istana Dodol" },
+	{ pad = C(139, 94, 52), stall = C(196, 132, 62), name = "Warung Kayu" },
+	{ pad = C(150, 70, 60), stall = C(210, 110, 80), name = "Warung Bata" },
+	{ pad = C(60, 90, 180), stall = C(90, 220, 255), name = "Warung Neon" },
+	{ pad = C(120, 70, 160), stall = C(255, 210, 90), name = "Istana Dodol" },
 }
 
 -- Random events, one every ~90 seconds.
