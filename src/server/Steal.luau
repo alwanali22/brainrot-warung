@@ -1,191 +1,137 @@
--- Steal: the threat of BRAINROT WARUNG. Touch a brainrot on another player's
--- plot and you carry it off; reach your own plot and it is yours. The victim's
--- plot locks 30s after a theft, a player can lock their own plot (L, 60s
--- cooldown), and a slap (F) knocks a thief down and drops the goods.
-
-local Players = game:GetService("Players")
+-- Steal: touch a brainrot on someone else's plot to carry it home; if you
+-- reach your own plot it is yours. The victim's base auto-locks 30 seconds
+-- after a theft, and a slap (F) knocks the catch loose and sends it home.
+-- Steal watches by distance, not Touched: a carried model moves with the
+-- thief, so a touch connection on it would fire for its own carrier.
 local Config = require(game:GetService("ReplicatedStorage").Shared.Config)
 local State = require(script.Parent.State)
-local Factory = require(script.Parent.BrainrotFactory)
 local Plots = require(script.Parent.Plots)
 
 local Steal = {}
 
--- Is `player` allowed to steal right now (cooldown expired, hands empty)?
-local function canSteal(player)
-	local record = State.get(player)
-	if not record then
-		return false
-	end
-	if record.carrying ~= nil then
-		return false
-	end
-	return os.clock() >= record.stealCooldownUntil
+function Steal.isLocked(player)
+	local d = State.get(player)
+	return d and os.clock() < d.lockedUntil
 end
 
--- Bind the touch-steal on an owned brainrot's PrimaryPart.
-function Steal.bindTouch(item)
-	local primary = item.model and item.model.PrimaryPart
-	if not primary then
-		return
-	end
-	local connection
-	connection = primary.Touched:Connect(function(hit)
-		local character = hit.Parent
-		local thief = character and Players:GetPlayerFromCharacter(character)
-		if not thief or thief == item.owner then
-			return
-		end
-		if item.carriedBy ~= nil then
-			return
-		end
-		local victimRecord = item.owner and State.get(item.owner) or nil
-		if victimRecord and State.isLocked(victimRecord) then
-			return -- a locked base cannot be stolen from.
-		end
-		if not canSteal(thief) then
-			return
-		end
-		Steal.steal(thief, item)
-	end)
-	item.touchConnection = connection
-end
-
--- Carry the item off. The model follows the thief until it reaches home,
--- is dropped by a slap, or the thief leaves/dies.
-function Steal.steal(thief, item)
-	local thiefRecord = State.get(thief)
-	local victimRecord = item.owner and State.get(item.owner) or nil
-	if not thiefRecord or not victimRecord then
+function Steal.lockBase(player, manual)
+	local d = State.get(player)
+	if not d then
 		return false
 	end
-	if victimRecord.brainrots[item.id] == nil then
+	if manual and os.clock() < d.lockReadyAt then
 		return false
 	end
-	victimRecord.brainrots[item.id] = nil
-	if item.touchConnection then
-		item.touchConnection:Disconnect()
-		item.touchConnection = nil
+	d.lockedUntil = os.clock() + Config.LockDuration
+	if manual then
+		d.lockReadyAt = os.clock() + Config.LockCooldown
 	end
-	item.carriedBy = thief
-	-- item.owner stays the victim until the thief reaches home: dropping
-	-- the goods (slap, death, leave) sends them back to the victim.
-	item.plotId = nil
-	item.slotIndex = nil
-	thiefRecord.carrying = item.id
-	thiefRecord.stealCooldownUntil = os.clock() + Config.StealCooldown
-	State.Conveyor[item.id] = item
-	-- The victim's base locks for 30 seconds after a theft.
-	victimRecord.lockUntil = os.clock() + Config.BaseLockSeconds
-	Plots.setLockShield(victimRecord.plotId, true)
-	task.delay(Config.BaseLockSeconds, function()
-		if victimRecord.lockUntil <= os.clock() then
-			Plots.setLockShield(victimRecord.plotId, false)
-		end
-	end)
 	return true
 end
 
--- Heartbeat: carried models hover above their carrier; reaching the
--- carrier's own plot completes the theft.
-function Steal.step()
+function Steal.trySteal(thief, item)
+	local d = State.get(thief)
+	if not item or not d or item.owner == thief or item.carriedBy or not item.plotId then
+		return
+	end
+	if Steal.isLocked(item.owner) then
+		return
+	end
+	if d.carrying then
+		return
+	end
+	local victim = item.owner
+	d.carrying = item
+	item.carriedBy = thief
+	Plots.removeFromPlot(item)
+	task.spawn(function()
+		while item.carriedBy == thief and item.model.Parent do
+			local char = thief.Character
+			local root = char and char:FindFirstChild("HumanoidRootPart")
+			if root then
+				item.model:PivotTo(root.CFrame * CFrame.new(0, 3, 0))
+				local home = Plots.padCenter(State.get(thief).plotId)
+				if (root.Position - home).Magnitude < 8 then
+					Steal.deliver(thief, item, victim)
+					break
+				end
+			end
+			task.wait(0.1)
+		end
+	end)
+end
+
+function Steal.deliver(thief, item, victim)
+	local d = State.get(thief)
+	if not d or item.carriedBy ~= thief then
+		return
+	end
+	item.carriedBy = nil
+	d.carrying = nil
+	item.owner = thief
+	Plots.placeBrainrot(thief, item)
+	if victim then
+		Steal.lockBase(victim, false)
+	end
+end
+
+function Steal.returnToOwner(item)
+	local owner = item.owner
+	local thief = item.carriedBy
+	item.carriedBy = nil
+	if thief then
+		local td = State.get(thief)
+		if td then
+			td.carrying = nil
+		end
+	end
+	if owner and State.get(owner) then
+		Plots.placeBrainrot(owner, item)
+	end
+end
+
+function Steal.slap(player)
+	local d = State.get(player)
+	if not d or os.clock() < d.slapReadyAt then
+		return
+	end
+	d.slapReadyAt = os.clock() + Config.SlapCooldown
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if not root then
+		return
+	end
 	for _, item in pairs(State.Conveyor) do
-		local carrier = item.carriedBy
-		if carrier ~= nil then
-			local record = State.get(carrier)
-			local character = carrier.Character
-			local root = character and character:FindFirstChild("HumanoidRootPart")
-			if not record or not root then
-				-- Carrier left or died: the goods go home.
-				State.dropCarried(carrier, Plots)
-			elseif record.carrying ~= item.id then
-				State.dropCarried(carrier, Plots)
-			else
-				Factory.moveModel(item.model, root.Position + Vector3.new(0, 4, 0))
-				if Plots.isOnPlot(record.plotId, root.Position) then
-					record.carrying = nil
-					-- placeOnPlot binds the steal touch through TouchBinder.
-					if not Plots.placeOnPlot(item, carrier) then
-						-- Thief's plot is full: the goods go back home.
-						Plots.returnToOwner(item)
+		if item.carriedBy and item.carriedBy ~= player then
+			local thiefChar = item.carriedBy.Character
+			local thiefRoot = thiefChar and thiefChar:FindFirstChild("HumanoidRootPart")
+			if thiefRoot and (thiefRoot.Position - root.Position).Magnitude < Config.SlapRange then
+				thiefRoot.AssemblyLinearVelocity = (thiefRoot.Position - root.Position).Unit * 40 + Vector3.new(0, 20, 0)
+				Steal.returnToOwner(item)
+			end
+		end
+	end
+end
+
+-- Distance watch: a non-owner standing next to a plot brainrot grabs it.
+-- The 3-stud grab range matches the distance the label stays readable at.
+function Steal.start()
+	task.spawn(function()
+		while true do
+			for _, item in pairs(State.Conveyor) do
+				if item.plotId and not item.carriedBy then
+					for player, _ in pairs(State.Players) do
+						if player ~= item.owner then
+							local char = player.Character
+							local root = char and char:FindFirstChild("HumanoidRootPart")
+							if root and (root.Position - item.model:GetPivot().Position).Magnitude < 3 then
+								Steal.trySteal(player, item)
+							end
+						end
 					end
 				end
 			end
+			task.wait(0.5)
 		end
-	end
-end
-
--- Slap: shove the nearest player in front of you; if they carry a stolen
--- brainrot, it drops and goes home.
-function Steal.slap(player)
-	local record = State.get(player)
-	if not record then
-		return false
-	end
-	if os.clock() < record.slapCooldownUntil then
-		return false
-	end
-	record.slapCooldownUntil = os.clock() + Config.SlapCooldown
-	local character = player.Character
-	local root = character and character:FindFirstChild("HumanoidRootPart")
-	if not root then
-		return false
-	end
-	local target = nil
-	local best = Config.SlapRange
-	for _, other in ipairs(Players:GetPlayers()) do
-		if other ~= player then
-			local otherRoot = other.Character and other.Character:FindFirstChild("HumanoidRootPart")
-			if otherRoot then
-				local delta = otherRoot.Position - root.Position
-				local dist = delta.Magnitude
-				local facing = root.CFrame.LookVector:Dot(delta.Unit)
-				if dist < best and facing > 0.3 then
-					best = dist
-					target = other
-				end
-			end
-		end
-	end
-	if not target then
-		return false
-	end
-	local targetRoot = target.Character:FindFirstChild("HumanoidRootPart")
-	if targetRoot then
-		targetRoot.AssemblyLinearVelocity = root.CFrame.LookVector * Config.SlapKnockback
-			+ Vector3.new(0, 18, 0)
-	end
-	local targetRecord = State.get(target)
-	if targetRecord and targetRecord.carrying ~= nil then
-		State.dropCarried(target, Plots)
-	end
-	return true
-end
-
--- Lock your own plot for 30 seconds (manual, 60s cooldown).
-function Steal.lockBase(player)
-	local record = State.get(player)
-	if not record then
-		return false
-	end
-	if os.clock() < record.lockCooldownUntil then
-		return false
-	end
-	record.lockUntil = os.clock() + Config.BaseLockSeconds
-	record.lockCooldownUntil = os.clock() + Config.LockCooldown
-	Plots.setLockShield(record.plotId, true)
-	task.delay(Config.BaseLockSeconds, function()
-		if record.lockUntil <= os.clock() then
-			Plots.setLockShield(record.plotId, false)
-		end
-	end)
-	return true
-end
-
-function Steal.start()
-	local RunService = game:GetService("RunService")
-	RunService.Heartbeat:Connect(function()
-		Steal.step()
 	end)
 end
 

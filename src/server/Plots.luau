@@ -1,188 +1,116 @@
--- Plots: the eight warung plots (slot geometry, owner sign, lock shield,
--- rebirth skin) and putting a brainrot on a slot / sending a stolen one home.
-
-local Config = require(game:GetService("ReplicatedStorage").Shared.Config)
+-- Plots: 8 warung plots, one per player. A plot is its PlotPad part in the
+-- Place; pad positions are read from the Place at runtime, never hardcoded.
+-- Slots fill in a 3x3 grid; rebirth re-skins the pad in the new warung colour.
+-- A slot is the first free grid cell, so selling frees the earliest slot.
+local Shared = game:GetService("ReplicatedStorage").Shared
+local Config = require(Shared.Config)
 local State = require(script.Parent.State)
-local Factory = require(script.Parent.BrainrotFactory)
-
-local V = Vector3.new
 
 local Plots = {}
 
--- Slot offsets on a plot pad (2 rows x 3 columns + 2, room for 8).
-local SLOT_OFFSETS = {
-	V(-3.5, 0, 1.5), V(0, 0, 1.5), V(3.5, 0, 1.5),
-	V(-3.5, 0, 3.5), V(0, 0, 3.5), V(3.5, 0, 3.5),
-	V(-3.5, 0, -1.5), V(3.5, 0, -1.5),
-}
-
-function Plots.init()
-	for plotId = 1, Config.PlotCount do
-		local centre = Config.PlotPositions[plotId]
-		local pad = workspace:FindFirstChild("PlotPad" .. tostring(plotId))
-		State.Plots[plotId] = {
-			owner = nil,
-			centre = centre,
-			pad = pad,
-			stall = nil, -- filled in by World.build's Stalls table
-		}
+function Plots.padCenter(plotId)
+	local pad = workspace:FindFirstChild("PlotPad" .. plotId)
+	if pad then
+		return pad.Position
 	end
+	return Vector3.new(0, 0, 0)
 end
 
-function Plots.linkStalls(stalls)
-	for plotId, stall in pairs(stalls) do
-		if State.Plots[plotId] then
-			State.Plots[plotId].stall = stall
-		end
-	end
-end
-
-function Plots.slotPosition(plotId, slotIndex)
-	local plot = State.Plots[plotId]
-	local offset = SLOT_OFFSETS[slotIndex] or SLOT_OFFSETS[1]
-	return V(plot.centre.X + offset.X, 1.2, plot.centre.Z + offset.Z)
-end
-
-function Plots.freeSlot(record)
-	local used = {}
-	for _, item in pairs(record.brainrots) do
-		used[item.slotIndex] = true
-	end
-	for i = 1, State.slotCount(record) do
-		if not used[i] then
+function Plots.assignPlot(player)
+	for i = 1, Config.PlotCount do
+		if not State.Plots[i] then
+			State.Plots[i] = player
+			State.get(player).plotId = i
+			Plots.buildNameBoard(player, i)
 			return i
 		end
 	end
 	return nil
 end
 
--- Put an owned item on its owner's plot (buying and stealing home).
--- Returns true, or false when the plot is full.
-function Plots.placeOnPlot(item, owner)
-	local record = State.get(owner)
-	if not record then
-		return false
+function Plots.freePlot(player)
+	local d = State.get(player)
+	if not d or not d.plotId then
+		return
 	end
-	local slot = Plots.freeSlot(record)
-	if not slot then
-		return false
+	local board = workspace:FindFirstChild("NameBoard" .. d.plotId)
+	if board then
+		board:Destroy()
 	end
-	item.owner = owner
-	item.plotId = record.plotId
+	State.Plots[d.plotId] = nil
+	d.plotId = nil
+end
+
+function Plots.slotPosition(plotId, slotIndex)
+	local c = Plots.padCenter(plotId)
+	local off = Config.SlotOffsets[slotIndex] or Vector3.zero
+	return Vector3.new(c.X + off.X, 1.2, c.Z + off.Z)
+end
+
+function Plots.placeBrainrot(player, item)
+	local d = State.get(player)
+	if not d or not d.plotId then
+		return
+	end
+	local slot = #State.plotBrainrots(player) + 1
+	item.plotId = d.plotId
 	item.slotIndex = slot
-	item.carriedBy = nil
-	State.Conveyor[item.id] = nil
-	record.brainrots[item.id] = item
-	Factory.moveModel(item.model, Plots.slotPosition(record.plotId, slot))
-	local prompt = item.model.PrimaryPart:FindFirstChild("BuyPrompt")
-	if prompt then
-		prompt:Destroy()
-	end
-	-- Owned brainrots can be stolen by touch (Steal.bindTouch, wired by
-	-- init through Plots.TouchBinder to avoid a require cycle).
-	if Plots.TouchBinder then
-		Plots.TouchBinder(item)
-	end
-	return true
-end
-
--- Send a carried/stolen item back to its owner's plot, or destroy it when
--- the owner is gone or the plot is full.
-function Plots.returnToOwner(item)
-	local owner = item.owner
-	local record = owner and State.get(owner) or nil
-	if not record then
-		if item.model then
-			item.model:Destroy()
-		end
-		State.Conveyor[item.id] = nil
-		return false
-	end
-	if not Plots.placeOnPlot(item, owner) then
-		if item.model then
-			item.model:Destroy()
-		end
-		record.brainrots[item.id] = nil
-		State.Conveyor[item.id] = nil
-		return false
-	end
-	return true
-end
-
--- Refresh the owner sign and the pad/stall colours of a plot.
-function Plots.refreshSign(plotId)
-	local plot = State.Plots[plotId]
-	if not plot or not plot.stall then
-		return
-	end
-	local sign = plot.stall:FindFirstChild("Sign")
-	local gui = sign and sign:FindFirstChild("OwnerSign")
-	local label = gui and gui:FindFirstChild("OwnerName")
-	if label then
-		if plot.owner then
-			label.Text = "WARUNG " .. string.upper(plot.owner.DisplayName)
-		else
-			label.Text = "WARUNG KOSONG"
+	item.model:PivotTo(CFrame.new(Plots.slotPosition(d.plotId, slot)))
+	for _, desc in ipairs(item.model:GetDescendants()) do
+		if desc:IsA("ProximityPrompt") then
+			desc:Destroy()
 		end
 	end
 end
 
-function Plots.setLockShield(plotId, visible)
-	local plot = State.Plots[plotId]
-	if not plot or not plot.stall then
-		return
-	end
-	local shield = plot.stall:FindFirstChild("LockShield")
-	if shield then
-		shield.Transparency = visible and 0.55 or 1
-	end
+function Plots.removeFromPlot(item)
+	item.plotId = nil
+	item.slotIndex = nil
 end
 
--- Apply a rebirth skin (pad + stall colours) to a plot.
-function Plots.applySkin(plotId, rebirths)
-	local plot = State.Plots[plotId]
-	if not plot then
-		return
-	end
-	local skin = Config.RebirthSkins[math.min(rebirths + 1, #Config.RebirthSkins)]
-	if plot.pad then
-		plot.pad.Color = skin.pad
-	end
-	if plot.stall then
-		local counter = plot.stall:FindFirstChild("Counter")
-		if counter then
-			counter.Color = skin.stall
-		end
-	end
-end
-
--- Is this point inside the given plot's pad?
-function Plots.isOnPlot(plotId, position)
-	local plot = State.Plots[plotId]
-	if not plot then
-		return false
-	end
-	local half = Config.PlotSize / 2 + 1
-	return math.abs(position.X - plot.centre.X) <= half
-		and math.abs(position.Z - plot.centre.Z) <= half
-end
-
--- Buy +2 slots for cash. Returns true on success.
 function Plots.upgradeSlots(player)
-	local record = State.get(player)
-	if not record then
+	local d = State.get(player)
+	if not d or d.slots >= Config.PlotSlotMax or d.cash < Config.PlotSlotCost then
 		return false
 	end
-	local cost = Config.SlotUpgradeCost * (record.slotUpgrades + 1)
-	if record.cash < cost then
-		return false
-	end
-	if State.slotCount(record) >= #SLOT_OFFSETS then
-		return false
-	end
-	record.cash -= cost
-	record.slotUpgrades += 1
+	d.cash -= Config.PlotSlotCost
+	d.slots += 2
 	return true
+end
+
+function Plots.buildNameBoard(player, plotId)
+	local c = Plots.padCenter(plotId)
+	local board = Instance.new("Part")
+	board.Name = "NameBoard" .. plotId
+	board.Size = Vector3.new(10, 0.4, 2)
+	board.Position = Vector3.new(c.X, 4.5, c.Z - 6)
+	board.Color = Color3.fromRGB(60, 40, 25)
+	board.Anchored = true
+	board.Parent = workspace
+	local gui = Instance.new("BillboardGui")
+	gui.Size = UDim2.new(0, 220, 0, 40)
+	gui.StudsOffset = Vector3.new(0, 2, 0)
+	gui.AlwaysOnTop = true
+	gui.Parent = board
+	local label = Instance.new("TextLabel")
+	label.Text = "WARUNG " .. player.Name
+	label.Size = UDim2.new(1, 0, 1, 0)
+	label.BackgroundTransparency = 1
+	label.TextColor3 = Color3.fromRGB(255, 220, 130)
+	label.TextScaled = true
+	label.Font = Enum.Font.GothamBold
+	label.Parent = gui
+end
+
+function Plots.applySkin(player)
+	local d = State.get(player)
+	if not d or not d.plotId then
+		return
+	end
+	local pad = workspace:FindFirstChild("PlotPad" .. d.plotId)
+	if pad then
+		pad.Color = Config.SkinColors[math.min(d.rebirths + 1, #Config.SkinColors)]
+	end
 end
 
 return Plots

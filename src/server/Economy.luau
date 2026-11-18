@@ -1,64 +1,36 @@
--- Economy: the one-second income tick and selling. The tick is the only
--- place cash is created; buying, upgrades and rebirth only spend it.
-
-local Players = game:GetService("Players")
-local Config = require(game:GetService("ReplicatedStorage").Shared.Config)
+-- Economy: one cash tick a second for every player, plus selling a brainrot
+-- back for half its price, rounded down. Income is the single
+-- State.totalIncome number, so rebirth and event multipliers apply here and
+-- nowhere else.
 local State = require(script.Parent.State)
 
 local Economy = {}
-Economy.Remotes = nil -- set by init.server.luau
 
--- Push one player's numbers to their HUD.
-function Economy.pushState(player)
-	if not Economy.Remotes then
-		return
-	end
-	local record = State.get(player)
-	if not record then
-		return
-	end
-	local remote = Economy.Remotes:FindFirstChild("StateUpdate")
-	if remote then
-		remote:FireClient(player, {
-			cash = math.floor(record.cash),
-			income = State.incomePerSecond(record),
-			rebirths = record.rebirths,
-			multiplier = record.multiplier,
-			brainrots = State.brainrotCount(record),
-			slots = State.slotCount(record),
-			locked = State.isLocked(record),
-			lockSeconds = math.max(0, math.floor(record.lockUntil - os.clock())),
-			event = State.CurrentEvent,
-		})
-	end
-	local leaderstats = player:FindFirstChild("leaderstats")
-	if leaderstats then
-		local cashStat = leaderstats:FindFirstChild("Cash")
-		if cashStat then
-			cashStat.Value = math.floor(record.cash)
-		end
-		local rebirthStat = leaderstats:FindFirstChild("Rebirths")
-		if rebirthStat then
-			rebirthStat.Value = record.rebirths
+function Economy.tick()
+	for player, _ in pairs(State.Players) do
+		local d = State.get(player)
+		if d then
+			d.cash += State.totalIncome(player)
 		end
 	end
 end
 
-function Economy.tick()
-	for _, player in ipairs(Players:GetPlayers()) do
-		local record = State.get(player)
-		if record then
-			record.cash += State.incomePerSecond(record) * Config.IncomeTick
-			Economy.pushState(player)
-		end
+function Economy.sellBrainrot(player, id)
+	local item = State.Conveyor[id]
+	local d = State.get(player)
+	if not item or not d or item.owner ~= player or not item.plotId then
+		return
 	end
+	d.cash += math.floor(item.price * 0.5)
+	item.model:Destroy()
+	State.Conveyor[id] = nil
 end
 
 function Economy.start()
 	task.spawn(function()
 		while true do
-			task.wait(Config.IncomeTick)
 			Economy.tick()
+			task.wait(1)
 		end
 	end)
 end

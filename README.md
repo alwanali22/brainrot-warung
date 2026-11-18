@@ -1,44 +1,37 @@
 # BRAINROT WARUNG — Pasar Brainrot
 
-Entry for make.fun's "Make the best AI Roblox brainrot game" bounty (roblox-brainrot-01):
-a 3D night-market brainrot game built as a Rojo project in Roblox's 3D world.
+A 3D Roblox brainrot game for make.fun's `roblox-brainrot-01` bounty
+("Make the best AI Roblox brainrot game", $1.000, 50 places).
 
-- **The game**: buy named brainrot characters off the moving "Etalase Berjalan"
-  conveyor, place them on your warung plot, and earn money every second. Steal
-  brainrots from other players' plots (base lock + slap to defend), rebirth
-  ("Naik Kelas Warung") for a permanent income multiplier and a new base skin,
-  and survive random events: Hujan Dodol (income x2), Tung Tung Rush (rare
-  spawns flood the conveyor), Satpol Raid (get home or lose 10% of your cash),
-  Tamu Istimewa (a Secret-tier brainrot walks the belt alone). Rare spawns can
-  carry a mutation — Emas x2, Berlian x3, Pelangi x5 income.
-- **The cast**: 16 Italian-brainrot characters (Tralalero Tralala, Bombardiro
-  Crocodilo, Ballerina Cappuccina, Tung Tung Tung Sahur, Glorbo Fruttodrillo, ...)
-  across 7 rarity tiers, each built in 3D from primitive Parts with a readable name/rarity/$-per-second label.
-- `main.ts` (Node 22, standard library only) hands the game in: it copies `game.rbxl`,
-  `src/`, `screenshots/` and `PLAY.json` to `/output`, leaving out every name that
-  starts with a dot (such as `.gitkeep` or `.DS_Store`, which fail an entry), and writes
-  `/output/dossier.json` with `vendor/makefun-roblox.ts`, the kit's copy, unchanged.
-- `game.rbxl` is the place Rojo builds from `src/` and `default.project.json`; see
-  `STRATEGY.md` for the judge criteria, the live board, and the design.
-- `src/` holds the Luau: `shared/` (Config, BrainrotData, Mutations), `server/` (one module per
-  job: World, State, BrainrotFactory, Conveyor, Plots, Economy, Steal, Rebirth,
-  Events), `client/` (HUD, Controls via ContextActionService).
-- **Status — screenshots are PLACEHOLDERS**: `screenshots/` still holds the kit
-  starter's three grey-square captures. They will be replaced in the Studio session
-  on the borrowed Windows PC with real captures of this game running in Studio
-  (16:9, ≤256 KiB each), the first of which becomes the game's Roblox thumbnail.
-  Do NOT submit before they are replaced.
-- **Status — PLAY.json**: still names place 0. The first publish from Studio fills
-  in the real `place_id` / `universe_id`, the play code goes in the experience
-  description, and the experience is set Public.
+**The game:** a night market in 3D. Brainrots parade down the "Etalase
+Berjalan" (walking showcase / conveyor) in front of the player. Buy one with
+E, park it on your warung plot, and it earns $/second. Other players can
+steal from your plot — carry the catch home, or slap the thief (F) to knock
+it loose. Lock your base (L), upgrade plot slots, and rebirth ("Naik Kelas
+Warung") for a permanent income multiplier and a new base skin.
 
-Run it as the grader does, writing `out/` in place of `/output`:
+- **16 brainrots, 7 tiers** (Common → Secret), each a 3D model built from
+  Parts with a readable name / rarity / $/second label.
+- **Mutations:** every spawn can roll Emas ×2 (8%), Berlian ×3 (3%) or
+  Pelangi ×5 (1%) — a ★ badge on the label and multiplied income.
+- **4 random events** (~every 90 s): Hujan Dodol (2× income), Tung Tung Rush
+  (rare spawns flood the belt), Satpol Raid (get home or lose 10% cash),
+  Tamu Istimewa (a lone Secret walks the belt).
+- **Steal + lock + slap, rebirth, slot upgrades** — all real in the code.
+- **World:** night market street, fence, side stalls, stage, string lights,
+  gate, lamps, carts, trees, dodol crates — 96 Place instances.
 
-    mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
+## Build
 
-Build the place first:
+```sh
+rojo build default.project.json --output game.rbxl
+MAKEFUN_OUTPUT_DIR=out node main.ts
+```
 
-    ~/workspace/makefun/roblox-brainrot-01/tools/rojo build default.project.json --output game.rbxl
+## Status
 
-The rules are on the bounty's page (/bounty/roblox-brainrot-01) and in the kit's RULES.txt,
-which gives every command in order (Before you submit, then Enter).
+- Game built + verified in the VM (Rojo, Luau, `makefun check`).
+- Still waiting on the Studio session (borrowed PC): first publish as a
+  Public experience, play code `makefun-jade-foghorn-toboggan` in the
+  description, fill in `PLAY.json`, replace the 3 placeholder screenshots
+  with real Studio captures, upload icon + thumbnail — then submit.

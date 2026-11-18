@@ -46,3 +46,5 @@ function Mutations.tagText(mutation)
 end
 
 return Mutations
+
+-- The roll is per spawn, so a plain brainrot stays the common case.

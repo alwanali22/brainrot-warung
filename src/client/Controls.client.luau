@@ -1,87 +1,75 @@
--- Controls.client: player input, bound through ContextActionService.
--- Roblox's default camera scripts swallow the Left/Right arrow keys before
--- InputBegan ever sees them, so movement binds here at high priority and
--- sunk; F = slap, L = lock, R = rebirth. E is NOT bound: the buy prompt owns it.
--- This script only feeds the default controller a camera-relative direction.
-
+-- Controls: movement on ContextActionService (the default camera scripts eat
+-- arrow keys on InputBegan, so binding here is the only path that works).
+-- The sink matters: without it the default controller would fight our keys.
+-- F slaps a thief, L locks the base, R fires rebirth. E stays free for the
+-- buy ProximityPrompt, so it is never bound or sunk here.
 local ContextActionService = game:GetService("ContextActionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
-local Workspace = game:GetService("Workspace")
-
 local player = Players.LocalPlayer
 local remotes = ReplicatedStorage:WaitForChild("Remotes")
 
--- Held keys, one flag per direction.
-local held = { Forward = false, Back = false, Left = false, Right = false }
+local keys = {}
 
-local function bindMove(actionName, flag, ...)
-	ContextActionService:BindActionAtPriority(actionName, function(_, state)
-		if state == Enum.UserInputState.Begin then
-			held[flag] = true
-		elseif state == Enum.UserInputState.End then
-			held[flag] = false
-		end
-		return Enum.ContextActionResult.Sink
-	end, false, Enum.ContextActionPriority.High.Value, ...)
+local function moveDir()
+	local d = Vector3.zero
+	if keys[Enum.KeyCode.W] or keys[Enum.KeyCode.Up] then
+		d += Vector3.new(0, 0, -1)
+	end
+	if keys[Enum.KeyCode.S] or keys[Enum.KeyCode.Down] then
+		d += Vector3.new(0, 0, 1)
+	end
+	if keys[Enum.KeyCode.A] or keys[Enum.KeyCode.Left] then
+		d += Vector3.new(-1, 0, 0)
+	end
+	if keys[Enum.KeyCode.D] or keys[Enum.KeyCode.Right] then
+		d += Vector3.new(1, 0, 0)
+	end
+	return d
 end
 
-bindMove("WarungMoveForward", "Forward", Enum.KeyCode.W, Enum.KeyCode.Up)
-bindMove("WarungMoveBack", "Back", Enum.KeyCode.S, Enum.KeyCode.Down)
-bindMove("WarungMoveLeft", "Left", Enum.KeyCode.A, Enum.KeyCode.Left)
-bindMove("WarungMoveRight", "Right", Enum.KeyCode.D, Enum.KeyCode.Right)
-
--- Slap the thief in front of you (F), lock your base (L), open rebirth (R).
-local function bindAction(actionName, remoteName, ...)
-	ContextActionService:BindActionAtPriority(actionName, function(_, state)
-		if state == Enum.UserInputState.Begin then
-			local remote = remotes:FindFirstChild(remoteName)
-			if remote then
-				remote:FireServer()
-			end
-		end
-		return Enum.ContextActionResult.Sink
-	end, false, Enum.ContextActionPriority.High.Value, ...)
+local function onMove(_, state, key)
+	if state == Enum.UserInputState.Begin then
+		keys[key] = true
+	elseif state == Enum.UserInputState.End then
+		keys[key] = nil
+	end
+	return Enum.ContextActionResult.Sink
 end
 
-bindAction("WarungSlap", "Slap", Enum.KeyCode.F)
-bindAction("WarungLockBase", "LockBase", Enum.KeyCode.L)
-bindAction("WarungRebirth", "Rebirth", Enum.KeyCode.R)
+local function onSlap(_, state)
+	if state == Enum.UserInputState.Begin then
+		remotes:WaitForChild("Slap"):FireServer()
+	end
+end
 
--- Each frame, turn the held keys into a camera-relative move direction.
-RunService.RenderStepped:Connect(function()
-	local character = player.Character
-	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-	if not humanoid or humanoid.Health <= 0 then
-		return
+local function onLock(_, state)
+	if state == Enum.UserInputState.Begin then
+		remotes:WaitForChild("Lock"):FireServer()
 	end
-	local camera = Workspace.CurrentCamera
-	if not camera then
-		return
+end
+
+local function onRebirth(_, state)
+	if state == Enum.UserInputState.Begin then
+		remotes:WaitForChild("Rebirth"):FireServer()
 	end
-	local forward = camera.CFrame.LookVector
-	forward = Vector3.new(forward.X, 0, forward.Z).Unit
-	local right = camera.CFrame.RightVector
-	right = Vector3.new(right.X, 0, right.Z).Unit
-	local move = Vector3.zero
-	if held.Forward then
-		move += forward
-	end
-	if held.Back then
-		move -= forward
-	end
-	if held.Right then
-		move += right
-	end
-	if held.Left then
-		move -= right
-	end
-	if move.Magnitude > 0 then
-		humanoid:Move(move.Unit, false)
-	else
-		-- No keys held: stop. (Our bindings sink the keys, so the default
-		-- controller never sees them; we are the only driver of Move.)
-		humanoid:Move(Vector3.zero, false)
+end
+
+ContextActionService:BindActionAtPriority("BrainrotMove", onMove, true, Enum.ContextActionPriority.High.Value,
+	Enum.KeyCode.W, Enum.KeyCode.A, Enum.KeyCode.S, Enum.KeyCode.D,
+	Enum.KeyCode.Up, Enum.KeyCode.Down, Enum.KeyCode.Left, Enum.KeyCode.Right)
+ContextActionService:BindAction("BrainrotSlap", onSlap, false, Enum.KeyCode.F)
+ContextActionService:BindAction("BrainrotLock", onLock, false, Enum.KeyCode.L)
+ContextActionService:BindAction("BrainrotRebirth", onRebirth, false, Enum.KeyCode.R)
+
+-- humanoid:Move runs every heartbeat, including Vector3.zero at idle — without
+-- the idle call the character keeps walking after the last key is released,
+-- because our binding sinks the keys from the default controller.
+RunService.Heartbeat:Connect(function()
+	local char = player.Character
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	if hum then
+		hum:Move(moveDir(), true)
 	end
 end)

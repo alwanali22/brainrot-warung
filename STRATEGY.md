@@ -1,72 +1,78 @@
 # STRATEGY — BRAINROT WARUNG: Pasar Brainrot
 
-Bounty: roblox-brainrot-01 — "Make the best AI Roblox brainrot game", $1.000, 50 tempat.
-Repo: https://github.com/alwanali22/brainrot-warung — entry: "BRAINROT WARUNG — Pasar Brainrot".
-Deadline submit: 20 Nov 2026, 21:30 WIB. Status: game dibangun di VM (Rojo, recorded);
-publish pertama + screenshot asli + icon/thumbnail + submit menunggu sesi Studio di PC pinjaman.
+Bounty: roblox-brainrot-01 — "Make the best AI Roblox brainrot game", $1.000,
+50 places. Repo: https://github.com/alwanali22/brainrot-warung — entry:
+"BRAINROT WARUNG — Pasar Brainrot: 16 brainrots, steal, lock, slap, rebirth,
+mutations, 4 events". Deadline submit: 20 Nov 2026, 21:30 WIB. Status: the
+game is built and verified in the VM (Rojo, recorded session); first publish
++ real screenshots + icon/thumbnail + submit wait for the Studio session on
+the borrowed PC.
 
-## 1. Kriteria juri (RULES.txt, "The judge" — urutan prioritas)
+## 1. What the judge ranks on (RULES.txt, in order)
 
-1. **Loop game 3D lengkap yang terlihat di screenshot**: karakter bergerak di dunia 3D,
-   brainrot dibeli/ditangkap, ditaruh di base, uang menetes per detik, tier berikutnya dibeli.
-   Game yang hanya digambar di ScreenGui = rank rendah.
-2. **Cast brainrot**: karakter absurd bernama, tangga rarity/mutasi, label nama + rarity +
-   $/detik yang terbaca; humor; jumlahnya.
-3. **Tension & progression**: mencuri dengan lock/defence, atau hazard; rebirth, upgrade,
-   event — masing-masing nyata di kode.
-4. **Look & polish**: dunia 3D terbangun, interface jelas, efek & feedback; thumbnail
-   (screenshot pertama) harus menjual game sekilas.
-5. **Struktur**: modul satu tugas satu modul, split client-server yang sehat,
-   state di satu tempat.
+1. **A complete 3D loop the screenshots show**: a character moving through a
+   3D world, a brainrot bought or caught, placed on a base, money ticking up
+   at its rate, the next tier bought. A game drawn only on a ScreenGui ranks low.
+2. **The cast**: absurd named characters, a ladder of rarities or mutations,
+   readable name + rarity + money-a-second labels; humour; how many.
+3. **Tension & progression**: stealing with a lock or defence, or a hazard;
+   rebirths, upgrades, events — each real in the code.
+4. **Look & polish**: a built 3D world, a clear interface, effects and
+   feedback; the first screenshot (the thumbnail) has to sell the game at a glance.
+5. **Structure**: one job per module, a sound client-server split, state in one place.
 
-Aturan emas RULES: "What a screenshot shows counts as made when the scripts or the
-Place block account for it." — jadi tiap mekanik HARUS ada di kode, bukan cuma di gambar.
+RULES' golden rule: "What a screenshot shows counts as made when the scripts
+or the Place block account for it." — every mechanic must exist in code, not
+just in a picture.
 
-## 2. Posisi board (live, 18 Nov 2026 ~09:0x WIB)
+## 2. Where the board stands (live, 18 Nov 2026 ~09:00 WIB)
 
-- 22 entry valid. Rank 1: sznbased "Brainrot Bay — Tsunami Steal" 996521.
-  Rank 10: musrik "Musrik Brainrot Bazaar - 14 original brainrots, steal, lock,
-  tsunami" 994054. Rank 20: cx1twov 989508.
-- Rate sangat padat (rank 1–10 hanya selisih ~0,25 poin): perbedaan kecil di kriteria
-  1–3 memutuskan menang/kalah; tidak ada ruang untuk mekanik setengah jadi.
-- Judul top-10 didominasi klon "Brainrot Bay / Bazaar / Tsunami" — hampir semua
-  meniru Steal a Brainrot mentah-mentah dengan tema pantai/tsunami yang sama.
-- Celah diferensiasi: **setting dan identitas visual yang berbeda** (pasar malam/warung
-  Indonesia, bukan pantai generik) + **cast 16 karakter** (lebih banyak dari rank 10
-  yang punya 14) + **sistem mutasi** (Emas/Berlian/Pelangi, x2/x3/x5) + **empat event
-  acak yang berbeda fungsi** (income, spawn, hazard, Secret) + rebirth
-  yang mengubah tampilan base.
+- 22 valid entries. Rank 1: sznbased "Brainrot Bay — Tsunami Steal" 996521.
+  Rank 10: musrik "Musrik Brainrot Bazaar - 14 original brainrots, steal,
+  lock, tsunami" 994054. Rank 20: cx1twov 989508.
+- Rates are packed (rank 1–10 span only ~0.25 points): small differences in
+  criteria 1–3 decide everything; there is no room for a half-built mechanic.
+- The top 10 is dominated by "Brainrot Bay / Bazaar / Tsunami" clones — the
+  same beach/tsunami take on Steal a Brainrot, over and over.
+- Our opening: a **different setting and visual identity** (an Indonesian
+  night market / warung, not a generic beach) + **16 characters** (more than
+  rank 10's 14) + **mutations** (Emas/Berlian/Pelangi, ×2/×3/×5) + **four
+  random events with different jobs** (income, spawns, hazard, Secret) +
+  rebirth that re-skins the base.
 
-## 3. Konsep: BRAINROT WARUNG — Pasar Brainrot
+## 3. The concept: BRAINROT WARUNG — Pasar Brainrot
 
-Pasar malam 3D di malam hari: jalan pasar beraspal dengan lampu gantung, deretan warung
-(plot pemain), dan satu **"Etalase Berjalan"** (conveyor) yang memparade brainrot lewat
-di depan pemain. Pemain membeli brainrot dari etalase, menaruhnya di plot warungnya
-sendiri, dan tiap brainrot menghasilkan $/detik. Ancaman: pemain lain bisa **mencuri**
-brainrot dari plotmu — bawa pulang ke plotnya; kamu bisa **mengunci base 30 detik**
-(setelah dicuri, lock otomatis) atau **menampar (slap)** pencuri sampai brainrot jatuh.
-Progression: **rebirth "Naik Kelas Warung"** (reset cash + brainrot → multiplier permanen
-+ skin base baru), upgrade slot plot, dan **event acak tiap ~90 detik**.
+A 3D night market after dark: an asphalt market street with hanging lights,
+rows of warungs (player plots), and one **"Etalase Berjalan"** (conveyor)
+parading brainrots past the player. Buy a brainrot off the showcase, put it
+on your own warung plot, and it earns $/second. Threat: other players can
+**steal** a brainrot off your plot and carry it home; you can **lock your
+base for 30 seconds** (auto-lock after a theft, or manual with L, 60 s
+cooldown) or **slap** (F) the thief until the catch drops. Progression:
+**rebirth "Naik Kelas Warung"** (reset cash + brainrots → permanent
+multiplier + a new base skin), plot slot upgrades, and **a random event
+every ~90 seconds**.
 
-Kenapa konsep ini menang di kriteria juri:
-- K1: loop penuh terlihat — conveyor + beli + plot + $/detik menetes di HUD + tier
-  berikutnya terpampang di etalase. Semua elemen loop ada di satu frame screenshot.
-- K2: 16 karakter Italian-brainrot bernama, 7 tier rarity, tiap model 3D dibangun dari
-  Part + label BillboardGui (nama, rarity berwarna, $/detik) yang terbaca dari jauh;
-  mutasi langka (Emas x2, Berlian x3, Pelangi x5) memberi badge ★ dan income lebih.
-- K3: steal + lock 30 detik + slap + 4 event (Hujan Dodol = income 2x; Tung Tung Rush =
-  spawn langka naik; Satpol Raid = hazard, pulang ke plot atau kehilangan 10% cash;
-  Tamu Istimewa = satu Secret jalan di etalase) +
-  rebirth + upgrade slot. Semua nyata di kode server, bukan teks pajangan.
-- K4: dunia 3D malam (lampu, gerobak, pohon, gapura pasar), HUD besar yang terbaca
-  saat diperkecil judge (screenshot digabung jadi satu lembar, cover 768x480).
-- K5: modul satu tugas satu modul; satu state store (server/State); RemoteEvents
-  sebagai satu-satunya jembatan client-server.
+Why it wins on the judge's criteria:
+- K1: the full loop fits one frame — conveyor + buy + plot + $/second
+  ticking on the HUD + the next tier on display in the showcase.
+- K2: 16 named Italian-brainrot characters, 7 tiers, each model built from
+  Parts + a BillboardGui label (name, coloured rarity, $/second) readable
+  from far away; rare mutations add a ★ badge and more income.
+- K3: steal + 30 s lock + slap + 4 events (Hujan Dodol = 2× income;
+  Tung Tung Rush = rare spawns up; Satpol Raid = hazard, get home or lose
+  10% cash; Tamu Istimewa = one Secret walks the belt) + rebirth + slot
+  upgrades. All real in server code, not display text.
+- K4: a built 3D night world (lamps, carts, trees, market gate), a big
+  readable HUD (cash top-centre, away from Roblox's top-left menu buttons),
+  and a cover screenshot that frames conveyor + buy + plot + HUD cash.
+- K5: one job per module; one state store (server/State); RemoteEvents as
+  the only client-server bridge.
 
-## 4. Cast — 16 karakter, 7 tier
+## 4. Cast — 16 characters, 7 tiers
 
-| # | Karakter | Tier | Harga | $/detik |
-|---|----------|------|-------|---------|
+| # | Character | Tier | Price | $/second |
+|---|-----------|------|-------|----------|
 | 1 | Chimpanzini Bananini | Common | $50 | $1 |
 | 2 | Lirili Larila | Common | $150 | $3 |
 | 3 | Trippi Troppi | Rare | $400 | $7 |
@@ -84,79 +90,86 @@ Kenapa konsep ini menang di kriteria juri:
 | 15 | Tung Tung Tung Sahur | Secret | $600.000 | $6.000 |
 | 16 | Glorbo Fruttodrillo | Secret | $900.000 | $9.000 |
 
-Mutasi (shared/Mutations): tiap spawn di conveyor me-roll mutasi — Emas x2 (8%),
-Berlian x3 (3%), Pelangi x5 (1%). Mutasi menambah badge "★ EMAS/Berlian/Pelangi" di
-label rarity (warna mutasi) dan mengalikan $/detik brainrot itu.
+Mutations (shared/Mutations): each conveyor spawn rolls one — Emas ×2 (8%),
+Berlian ×3 (3%), Pelangi ×5 (1%). A mutation adds a "★ EMAS / BERLIAN /
+PELANGI" badge to the rarity label (in the mutation's colour) and multiplies
+that brainrot's $/second.
 
-Tiap karakter dibangun 3D dari Part primitif (badan + kepala + aksesori khas, mis.
-hiu Tralalero bersirip, buaya Bombardiro bersayap, Ballerina bertutu) + BillboardGui
-nama/rarity/$-per-detik. Tidak ada union/mesh/SurfaceAppearance — syarat publish via
-Open Cloud terpenuhi.
+Each character is built 3D from primitive Parts (body + head + signature
+accessory — Tralalero's shark fin, Bombardiro's wings, Ballerina's tutu) +
+a BillboardGui with name / rarity / $/second. No unions, meshes or
+SurfaceAppearances — the Open Cloud publish requirements hold.
 
-## 5. Mekanik (semua nyata di kode)
+## 5. Mechanics (all real in code)
 
-- **Etalase Berjalan (server/Conveyor)**: spawn tiap ~7 detik, bobot rarity
-  (Common dominan, Secret sangat langka); model berjalan di conveyor 100 stud lalu
-  hilang; beli via ProximityPrompt (tombol E) — cek jarak, cash, slot plot kosong.
-- **Plot/Base (server/Plots)**: 8 plot, 1 per pemain; 4 slot awal, upgrade +2 slot
-  pakai cash; brainrot di slot menghasilkan income; papan nama pemilik di warung.
-- **Ekonomi (server/Economy + server/State)**: tick 1 detik; income = jumlah $/detik
-  × multiplier rebirth × multiplier event; satu state store untuk semua pemain.
-- **Mencuri (server/Steal)**: sentuh brainrot di plot orang → bawa pulang (model
-  mengikuti pencuri); sampai di plot sendiri = milikmu. Lock base 30 detik otomatis
-  setelah dicuri + lock manual (tombol L, cooldown 60 detik). Slap (tombol F):
-  dorong pencuri + jatuhkan brainrot curian, kembali ke pemilik.
-- **Rebirth "Naik Kelas Warung" (server/Rebirth)**: syarat cash + minimal 3 brainrot;
-  reset cash + brainrot, multiplier +0,5 permanen, skin base baru per tingkat
-  (Kayu → Bata → Neon → Istana Dodol).
-- **Event acak (server/Events)**: tiap ~90 detik salah satu dari Hujan Dodol (income
-  2x 30 detik + dodol jatuh dari langit), Tung Tung Rush (spawn langka naik 60 detik +
-  3 spawn langka langsung), Satpol Raid (peringatan 15 detik, conveyor jeda, pemain di
-  luar plot kehilangan 10% cash), Tamu Istimewa (satu brainrot tier Secret jalan
-  sendiri di etalase).
-- **Kontrol (client/Controls)**: gerakan pakai ContextActionService (arrow keys + WASD,
-  prioritas tinggi + sink — script kamera default Roblox mengambil alih arrow keys
-  untuk InputBegan, jadi binding lewat ContextActionService adalah jalurnya, sesuai
-  catatan RULES.txt); F = slap, L = lock base, R = menu rebirth. Tombol E dibiarkan
-  untuk ProximityPrompt beli (tidak di-sink, supaya prompt tetap menerima E).
-- **HUD (client/HUD)**: cash besar di atas-tengah (jauh dari pojok kiri-atas tempat
-  tombol menu Roblox), $/detik, rebirth + multiplier, banner event, tombol
-  Rebirth / Lock / Tambah Slot, daftar brainrot di plot.
+- **Etalase Berjalan (server/Conveyor)**: a spawn every ~7 s, weighted by
+  rarity (Common dominant, Secret very rare); the model walks the 100-stud
+  belt and despawns at the end; buy with the ProximityPrompt (E) — checks
+  distance, cash, and a free plot slot first.
+- **Plots (server/Plots)**: 8 plots, one per player; 4 slots to start,
+  +2 slots per upgrade for cash; brainrots on slots earn income; a name
+  board marks each warung's owner.
+- **Economy (server/Economy + server/State)**: a 1-second tick; income =
+  sum of $/second × rebirth multiplier × event multiplier; one state store
+  for all players.
+- **Stealing (server/Steal)**: stand next to a brainrot on someone else's
+  plot to pick it up and carry it home; reaching your own plot makes it
+  yours. Lock the base for 30 s automatically after a theft, or manually
+  (L, 60 s cooldown). Slap (F): knock the thief back and drop the catch,
+  which returns to its owner.
+- **Rebirth "Naik Kelas Warung" (server/Rebirth)**: needs cash + at least 3
+  brainrots; resets cash + brainrots, adds a permanent +0.5 multiplier,
+  and re-skins the base (Kayu → Bata → Neon → Istana Dodol).
+- **Random events (server/Events)**: one every ~90 s — Hujan Dodol (2×
+  income for 30 s + dodol falling from the sky), Tung Tung Rush (rare
+  spawns up for 60 s + 3 rare spawns at once), Satpol Raid (15 s warning,
+  then anyone off their plot loses 10% cash), Tamu Istimewa (one Secret
+  walks the belt alone).
+- **Controls (client/Controls)**: movement via ContextActionService (arrow
+  keys + WASD, high priority + sink — the default camera scripts take the
+  arrow keys on InputBegan, so this binding is the only path, per
+  RULES.txt); F = slap, L = lock, R = rebirth. E is left alone so the buy
+  ProximityPrompt still receives it.
+- **HUD (client/HUD)**: big cash top-centre (far from Roblox's top-left menu
+  buttons), $/second, rebirth + multiplier, event banner, Rebirth / Lock /
+  Tambah Slot buttons, and the plot's brainrot list.
 
-## 6. Struktur kode (kriteria 5)
+## 6. Code layout (criterion 5)
 
 ```
-src/shared/Config.luau        — konstanta, nama Remote, tuning event/rebirth
-src/shared/BrainrotData.luau  — 16 karakter + 7 tier + bobot spawn
-src/shared/Mutations.luau     — mutasi Emas/Berlian/Pelangi (x2/x3/x5) + roll
-src/server/init.server.luau   — wiring: remotes, player join/leave, loop utama
-src/server/World.luau         — bangun dunia 3D saat runtime (jalan, warung, lampu, gerobak)
-src/server/State.luau         — SATU state store semua pemain
-src/server/BrainrotFactory.luau — bangun model 3D karakter dari Part + label
-src/server/Conveyor.luau      — spawn, gerak, despawn, beli dari etalase
-src/server/Plots.luau         — plot, slot, penempatan, papan nama, upgrade
-src/server/Economy.luau       — tick income 1 detik, jual
-src/server/Steal.luau         — curi, bawa, slap, lock
-src/server/Rebirth.luau       — syarat, reset, multiplier, skin base
-src/server/Events.luau        — scheduler event acak + 4 event
-src/client/HUD.client.luau    — ScreenGui: cash, income, banner, tombol
-src/client/Controls.client.luau — ContextActionService: gerak + F/L/R
+src/shared/Config.luau        — constants, remote names, event/rebirth tuning
+src/shared/BrainrotData.luau  — 16 characters + 7 tiers + spawn weights
+src/shared/Mutations.luau     — mutations Emas/Berlian/Pelangi (×2/×3/×5) + roll
+src/server/init.server.luau   — wiring: remotes, player join/leave, main loops
+src/server/World.luau         — builds the 3D world at runtime (street, lamps, carts)
+src/server/State.luau         — the ONE state store for all players
+src/server/BrainrotFactory.luau — builds a character model from Parts + label
+src/server/Conveyor.luau      — spawn, walk, despawn, buy from the showcase
+src/server/Plots.luau         — plots, slots, placement, name boards, upgrades
+src/server/Economy.luau       — 1-second income tick, sell
+src/server/Steal.luau         — steal, carry, slap, lock
+src/server/Rebirth.luau       — requirements, reset, multiplier, base skins
+src/server/Events.luau        — random-event scheduler + the 4 events
+src/client/HUD.client.luau    — ScreenGui: cash, income, banner, buttons
+src/client/Controls.client.luau — ContextActionService: movement + F/L/R
 ```
 
-## 7. Screenshot (STATUS: placeholder — sesi Studio)
+## 7. Screenshots (STATUS: placeholder — Studio session)
 
-` screenshots/ ` saat ini masih berisi 3 screenshot STARTER (kotak abu-abu) sebagai
-placeholder agar `makefun check` lolos gate file. Itu BUKAN screenshot game ini.
-Sesi Studio di PC pinjaman (18 Nov) WAJIB menggantinya dengan 3–4 capture asli game
-berjalan di Studio (16:9, ≤256 KiB tiap file), dengan screenshot pertama = thumbnail
-yang di-upload ke Creator Dashboard. JANGAN submit sebelum screenshot diganti —
-finalist review mendiskualifikasi screenshot yang jelas-jelas bukan capture game
-yang diserahkan. TOUR.json sudah diperbarui untuk tur game baru (tetap menunjuk
-nama file placeholder yang sama, diganti isinya di Studio).
+`screenshots/` still holds the 3 STARTER screenshots (grey boxes) as
+placeholders so `makefun check` passes its file gate. They are NOT captures
+of this game. The Studio session on the borrowed PC MUST replace them with
+3–4 real captures of the game running in Studio (16:9, ≤256 KiB each, the
+first = the thumbnail), framing conveyor + buy + plot + HUD cash + the new
+world (fence, side stalls, stage, string lights). Do NOT submit before the
+screenshots are replaced — finalist review disqualifies screenshots that are
+plainly not captures of the submitted game. TOUR.json already covers the new
+game's tour (same file names, replaced content in Studio).
 
-## 8. Yang TIDAK dilakukan di sesi ini (sesi Studio / Wowo)
+## 8. NOT done in this session (Studio session / Wowo)
 
-- Publish pertama ke Roblox + Public + play code di deskripsi + isi PLAY.json
-  (place_id/universe_id masih 0 — `check` play_link diharapkan FAIL).
-- Screenshot asli, icon + thumbnail di Creator Dashboard.
-- Submit (menunggu review desain Wowo + sesi Studio selesai).
+- First publish to Roblox + Public + play code in the description + fill in
+  PLAY.json (place_id + universe_id still 0 — `check` play_link is expected
+  to FAIL until then).
+- Real screenshots, icon + thumbnail on the Creator Dashboard.
+- Submit (waits for Wowo's design review + the Studio session).

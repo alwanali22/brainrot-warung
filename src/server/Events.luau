@@ -1,76 +1,29 @@
--- Events: one random market event every ~90 seconds. Four kinds, each real
--- in the code: Hujan Dodol doubles income, Tung Tung Rush floods the conveyor
--- with rare brainrots, Satpol Raid sweeps the street (caught outside your plot,
--- you lose 10% of your cash), and Tamu Istimewa walks a Secret down the belt.
-
-local Players = game:GetService("Players")
-local Config = require(game:GetService("ReplicatedStorage").Shared.Config)
-local BrainrotData = require(game:GetService("ReplicatedStorage").Shared.BrainrotData)
-local Mutations = require(game:GetService("ReplicatedStorage").Shared.Mutations)
+-- Events: one random event every ~90 seconds. Four kinds: Hujan Dodol doubles
+-- income, Tung Tung Rush floods the belt with rare spawns, Satpol Raid
+-- punishes anyone caught off their plot, and Tamu Istimewa walks a Secret
+-- down the belt alone. Every event announces itself on the HUD banner.
+local Shared = game:GetService("ReplicatedStorage").Shared
+local Config = require(Shared.Config)
+local BrainrotData = require(Shared.BrainrotData)
+local Mutations = require(Shared.Mutations)
 local State = require(script.Parent.State)
 local Factory = require(script.Parent.BrainrotFactory)
+local Conveyor = require(script.Parent.Conveyor)
 local Plots = require(script.Parent.Plots)
 
 local Events = {}
-Events.Remotes = nil -- set by init.server.luau
+local announceRemote = nil
 
 local function announce(text, color)
-	State.CurrentEvent = text
-	if Events.Remotes then
-		local remote = Events.Remotes:FindFirstChild("EventAnnounce")
-		if remote then
-			remote:FireAllClients(text, color)
-		end
+	if not announceRemote then
+		local remotes = game:GetService("ReplicatedStorage"):WaitForChild("Remotes")
+		announceRemote = remotes:WaitForChild("EventAnnounce")
 	end
+	announceRemote:FireAllClients(text, color)
 end
 
-local function clearAnnouncement()
-	State.CurrentEvent = nil
-	if Events.Remotes then
-		local remote = Events.Remotes:FindFirstChild("EventAnnounce")
-		if remote then
-			remote:FireAllClients("", Color3.fromRGB(255, 255, 255))
-		end
-	end
-end
-
--- Hujan Dodol: income x2 for 30 seconds, dodol pieces rain on the street.
-local function hujanDodol()
-	State.EventMultiplier = Config.DodolMultiplier
-	announce("HUJAN DODOL! Income x2 selama 30 detik!", Color3.fromRGB(255, 200, 80))
-	local drops = {}
-	for _ = 1, 30 do
-		local drop = Instance.new("Part")
-		drop.Size = Vector3.new(1.2, 0.8, 1.2)
-		drop.Color = Color3.fromRGB(120, 70, 30)
-		drop.Material = Enum.Material.SmoothPlastic
-		drop.Anchored = true
-		drop.CanCollide = false
-		drop.Position = Vector3.new(math.random(-24, 28), math.random(25, 40), math.random(-55, 55))
-		drop.Parent = workspace
-		table.insert(drops, drop)
-	end
-	task.spawn(function()
-		for _ = 1, 60 do
-			task.wait(0.5)
-			for _, drop in ipairs(drops) do
-				if drop.Parent then
-					drop.Position -= Vector3.new(0, 1.2, 0)
-					if drop.Position.Y <= 1 then
-						drop:Destroy()
-					end
-				end
-			end
-		end
-	end)
-	task.delay(Config.EventDuration, function()
-		State.EventMultiplier = 1
-		clearAnnouncement()
-	end)
-end
-
--- Spawn one brainrot on the belt at z (shared by the rush and the guest:
--- one roll, one model, one buy prompt, one conveyor record).
+-- One belt spawn, shared by the rush and the special guest: roll a mutation,
+-- build the model, wire the buy prompt, register the item like a normal spawn.
 local function spawnBeltBrainrot(char, z)
 	local mutation = Mutations.rollMutation()
 	local id = State.nextId()
@@ -79,28 +32,54 @@ local function spawnBeltBrainrot(char, z)
 	model.Parent = workspace
 	local prompt = Factory.attachBuyPrompt(model, id, char.price)
 	prompt.Triggered:Connect(function(player)
-		require(script.Parent.Conveyor).buyBrainrot(player, id)
+		Conveyor.buyBrainrot(player, id)
 	end)
 	State.Conveyor[id] = {
 		id = id, charKey = char.key, name = char.name, tier = char.tier,
 		price = char.price, income = Mutations.mutatedIncome(char, mutation),
-		mutation = mutation, model = model,
-		owner = nil, plotId = nil, slotIndex = nil, carriedBy = nil,
-		z = z,
+		mutation = mutation, model = model, owner = nil, plotId = nil,
+		slotIndex = nil, carriedBy = nil, z = z,
 	}
 end
 
--- Tung Tung Rush: rare spawns flood the conveyor for 60 seconds, and three
--- rare brainrots appear on the belt at once.
+local function hujanDodol()
+	State.EventMultiplier = Config.DodolMultiplier
+	announce("HUJAN DODOL! Income 2x selama 30 detik!", Color3.fromRGB(255, 210, 60))
+	for i = 1, 20 do
+		local p = Instance.new("Part")
+		p.Name = "DodolRain"
+		p.Shape = Enum.PartType.Ball
+		p.Size = Vector3.new(1, 1, 1)
+		p.Position = Vector3.new(math.random(-30, 30), 40 + i, math.random(-50, 50))
+		p.Color = Color3.fromRGB(150, 90, 40)
+		p.Anchored = false
+		p.Parent = workspace
+		game:GetService("Debris"):AddItem(p, 8)
+	end
+	task.delay(Config.DodolDuration, function()
+		State.EventMultiplier = 1
+	end)
+end
+
 local function tungTungRush()
-	State.RushActive = true
-	announce("TUNG TUNG RUSH! Brainrot langka membanjiri etalase!", Color3.fromRGB(80, 230, 180))
+	announce("TUNG TUNG RUSH! Brainrot langka membanjiri etalase!", Color3.fromRGB(255, 120, 60))
+	State.RushUntil = os.clock() + Config.RushDuration
 	for _ = 1, 3 do
 		spawnBeltBrainrot(BrainrotData.pickCharacter(true), Config.ConveyorZ0 - 12)
 	end
-	task.delay(Config.RushDuration, function()
-		State.RushActive = false
-		clearAnnouncement()
+end
+
+local function satpolRaid()
+	announce("SATPOL RAID! Kembali ke plotmu dalam 15 detik atau kehilangan 10% cash!", Color3.fromRGB(255, 60, 60))
+	task.delay(Config.RaidWarn, function()
+		for player, d in pairs(State.Players) do
+			local char = player.Character
+			local root = char and char:FindFirstChild("HumanoidRootPart")
+			local home = d.plotId and Plots.padCenter(d.plotId)
+			if root and home and (root.Position - home).Magnitude > 10 then
+				d.cash = math.floor(d.cash * (1 - Config.RaidLoss))
+			end
+		end
 	end)
 end
 
@@ -116,36 +95,14 @@ local function tamuIstimewa()
 	spawnBeltBrainrot(secrets[math.random(1, #secrets)], Config.ConveyorZ0 - 12)
 end
 
--- Satpol Raid: 15 seconds to run home, then the sweep takes 10% of the
--- cash of anyone caught outside their own plot. The conveyor halts.
-local function satpolRaid()
-	State.RaidActive = true
-	announce("SATPOL RAID! Pulang ke warungmu dalam 15 detik!", Color3.fromRGB(255, 80, 80))
-	task.delay(Config.RaidWarnSeconds, function()
-		for _, player in ipairs(Players:GetPlayers()) do
-			local record = State.get(player)
-			local character = player.Character
-			local root = character and character:FindFirstChild("HumanoidRootPart")
-			if record and root and not Plots.isOnPlot(record.plotId, root.Position) then
-				record.cash = math.floor(record.cash * (1 - Config.RaidCashLoss))
-			end
-		end
-		announce("Satpol sudah lewat. Etalase buka lagi!", Color3.fromRGB(255, 255, 255))
-		task.delay(5, function()
-			State.RaidActive = false
-			clearAnnouncement()
-		end)
-	end)
-end
-
+-- Four pickers, equal odds; the scheduler draws one every EventInterval.
 local EVENT_PICKERS = { hujanDodol, tungTungRush, satpolRaid, tamuIstimewa }
 
 function Events.start()
 	task.spawn(function()
 		while true do
 			task.wait(Config.EventInterval)
-			local pick = EVENT_PICKERS[math.random(1, #EVENT_PICKERS)]
-			pick()
+			EVENT_PICKERS[math.random(1, #EVENT_PICKERS)]()
 		end
 	end)
 end

@@ -1,13 +1,10 @@
--- init.server: wiring for BRAINROT WARUNG — world, RemoteEvents, player
--- plots and wallets, then starts the conveyor, economy, steal, events.
-
+-- init: wiring only. Creates the Remotes folder, assigns a plot on join,
+-- frees it on leave, pushes HUD numbers every second, and starts the
+-- conveyor, economy, steal and event loops. (Rojo makes src/server/ one
+-- Script "Server", so modules are require(script.X), not script.Parent.X.)
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
 local Config = require(ReplicatedStorage.Shared.Config)
--- NOTE: Rojo turns src/server/ into ONE Script named "Server" (from
--- init.server.luau) with the other modules as its children, so the modules
--- are require()d as script.<Name> here, not script.Parent.<Name>.
 local State = require(script.State)
 local World = require(script.World)
 local Plots = require(script.Plots)
@@ -17,90 +14,82 @@ local Steal = require(script.Steal)
 local Rebirth = require(script.Rebirth)
 local Events = require(script.Events)
 
--- One folder holding every RemoteEvent (names from Config.Remotes).
 local remotes = Instance.new("Folder")
 remotes.Name = "Remotes"
 remotes.Parent = ReplicatedStorage
 for _, name in ipairs(Config.Remotes) do
-	local remote = Instance.new("RemoteEvent")
-	remote.Name = name
-	remote.Parent = remotes
+	local ev = Instance.new("RemoteEvent")
+	ev.Name = name
+	ev.Parent = remotes
 end
 
--- Build the market, then link stalls into the plot records.
-Plots.init()
 World.build()
-Plots.linkStalls(World.Stalls)
-Plots.TouchBinder = Steal.bindTouch
-Economy.Remotes = remotes
-Events.Remotes = remotes
 
-local function onPlayerAdded(player)
-	local plotId = State.claimPlot(player)
-	if not plotId then
-		player:Kick("Pasar penuh — semua warung sudah ada pemiliknya.")
-		return
-	end
-	local record = State.newPlayerRecord(plotId)
-	State.Players[player] = record
-	Plots.refreshSign(plotId)
-	Plots.applySkin(plotId, 0)
-
-	-- Leaderboard stats, shown in Roblox's default player list.
-	local leaderstats = Instance.new("Folder")
-	leaderstats.Name = "leaderstats"
-	leaderstats.Parent = player
-	local cashStat = Instance.new("IntValue")
-	cashStat.Name = "Cash"
-	cashStat.Value = Config.StartCash
-	cashStat.Parent = leaderstats
-	local rebirthStat = Instance.new("IntValue")
-	rebirthStat.Name = "Rebirths"
-	rebirthStat.Value = 0
-	rebirthStat.Parent = leaderstats
-
-	player.CharacterAdded:Connect(function(character)
-		local humanoid = character:WaitForChild("Humanoid")
-		humanoid.Died:Connect(function()
-			-- Dying drops whatever you were carrying.
-			State.dropCarried(player, Plots)
-		end)
+local function onJoin(player)
+	State.newPlayer(player)
+	Plots.assignPlot(player)
+	player.CharacterAdded:Connect(function(char)
+		task.wait(1)
+		local root = char:FindFirstChild("HumanoidRootPart")
+		if root then
+			root.CFrame = CFrame.new(0, 3, -50)
+		end
 	end)
 end
 
-Players.PlayerAdded:Connect(onPlayerAdded)
-for _, player in ipairs(Players:GetPlayers()) do
-	onPlayerAdded(player)
+local function onLeave(player)
+	local d = State.get(player)
+	if d and d.carrying then
+		Steal.returnToOwner(d.carrying)
+	end
+	for _, item in pairs(State.Conveyor) do
+		if item.owner == player then
+			item.model:Destroy()
+			State.Conveyor[item.id] = nil
+		end
+	end
+	Plots.freePlot(player)
+	State.removePlayer(player)
 end
 
--- Remote handlers: every client request goes through the same server-side
--- checks as the in-world prompts do.
-remotes.BuyBrainrot.OnServerEvent:Connect(function(player, itemId)
-	Conveyor.buyBrainrot(player, itemId)
+Players.PlayerAdded:Connect(onJoin)
+Players.PlayerRemoving:Connect(onLeave)
+for _, p in ipairs(Players:GetPlayers()) do
+	onJoin(p)
+end
+
+-- HUD push, once a second: cash, income, multiplier, rebirths, plot list.
+-- One remote, one push: the client never asks for numbers.
+task.spawn(function()
+	while true do
+		for player, d in pairs(State.Players) do
+			local names = {}
+			for _, item in ipairs(State.plotBrainrots(player)) do
+				table.insert(names, item.name)
+			end
+			remotes.HudUpdate:FireClient(player, d.cash, State.totalIncome(player), d.multiplier, d.rebirths, names)
+		end
+		task.wait(1)
+	end
+end)
+
+remotes.Rebirth.OnServerEvent:Connect(function(player)
+	Rebirth.doRebirth(player)
+end)
+remotes.Lock.OnServerEvent:Connect(function(player)
+	Steal.lockBase(player, true)
 end)
 remotes.Slap.OnServerEvent:Connect(function(player)
 	Steal.slap(player)
 end)
-remotes.LockBase.OnServerEvent:Connect(function(player)
-	Steal.lockBase(player)
-end)
-remotes.Rebirth.OnServerEvent:Connect(function(player)
-	local ok, message = Rebirth.doRebirth(player)
-	local remote = remotes:FindFirstChild("EventAnnounce")
-	if remote and ok then
-		remote:FireClient(player, message, Color3.fromRGB(255, 210, 90))
-	end
-end)
-remotes.UpgradePlot.OnServerEvent:Connect(function(player)
+remotes.AddSlot.OnServerEvent:Connect(function(player)
 	Plots.upgradeSlots(player)
-	Economy.pushState(player)
+end)
+remotes.Sell.OnServerEvent:Connect(function(player, id)
+	Economy.sellBrainrot(player, id)
 end)
 
--- Start the loops: conveyor spawns + movement, income tick, steal
--- heartbeat, and the random event clock.
 Conveyor.start()
 Economy.start()
 Steal.start()
 Events.start()
-
-print("BRAINROT WARUNG siap — pasar buka, etalase berjalan.")
