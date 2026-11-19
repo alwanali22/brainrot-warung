@@ -3,7 +3,7 @@
 Bounty: roblox-brainrot-01 — "Make the best AI Roblox brainrot game", $1.000,
 50 places. Repo: https://github.com/alwanali22/brainrot-warung — entry:
 "BRAINROT WARUNG — Pasar Brainrot: 16 brainrots, steal, lock, slap, rebirth,
-mutations, 4 events". Deadline submit: 20 Nov 2026, 21:30 WIB. Status: the
+mutations, 5 events, banjir bandang". Deadline submit: 20 Nov 2026, 21:30 WIB. Status: the
 game is built and verified in the VM (Rojo, recorded session); first publish
 + real screenshots + icon/thumbnail + submit wait for the Studio session on
 the borrowed PC.
@@ -36,8 +36,9 @@ just in a picture.
   same beach/tsunami take on Steal a Brainrot, over and over.
 - Our opening: a **different setting and visual identity** (an Indonesian
   night market / warung, not a generic beach) + **16 characters** (more than
-  rank 10's 14) + **mutations** (Emas/Berlian/Pelangi, ×2/×3/×5) + **four
-  random events with different jobs** (income, spawns, hazard, Secret) +
+  rank 10's 14) + **mutations** (Emas/Berlian/Pelangi, ×2/×3/×5) + **five
+  random events with different jobs** (income, spawns, hazard, Secret,
+  flood wall) +
   rebirth that re-skins the base.
 
 ## 3. The concept: BRAINROT WARUNG — Pasar Brainrot
@@ -59,9 +60,10 @@ Why it wins on the judge's criteria:
 - K2: 16 named Italian-brainrot characters, 7 tiers, each model built from
   Parts + a BillboardGui label (name, coloured rarity, $/second) readable
   from far away; rare mutations add a ★ badge and more income.
-- K3: steal + 30 s lock + slap + 4 events (Hujan Dodol = 2× income;
+- K3: steal + 30 s lock + slap + 5 events (Hujan Dodol = 2× income;
   Tung Tung Rush = rare spawns up; Satpol Raid = hazard, get home or lose
-  10% cash; Tamu Istimewa = one Secret walks the belt) + rebirth + slot
+  10% cash; Tamu Istimewa = one Secret walks the belt; Banjir Bandang = a
+  flood wall sweeps the street, caught off-plot loses 10% cash) + rebirth + slot
   upgrades. All real in server code, not display text.
 - K4: a built 3D night world (lamps, carts, trees, market gate), a big
   readable HUD (cash top-centre, away from Roblox's top-left menu buttons),
@@ -124,7 +126,8 @@ SurfaceAppearances — the Open Cloud publish requirements hold.
   income for 30 s + dodol falling from the sky), Tung Tung Rush (rare
   spawns up for 60 s + 3 rare spawns at once), Satpol Raid (15 s warning,
   then anyone off their plot loses 10% cash), Tamu Istimewa (one Secret
-  walks the belt alone).
+  walks the belt alone), Banjir Bandang (3 s warning, then a flood wall
+  sweeps the street over 15 s; anyone it catches off-plot loses 10% cash).
 - **Controls (client/Controls)**: movement via ContextActionService (arrow
   keys + WASD, high priority + sink — the default camera scripts take the
   arrow keys on InputBegan, so this binding is the only path, per

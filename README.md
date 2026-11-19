@@ -14,9 +14,10 @@ Warung") for a permanent income multiplier and a new base skin.
   Parts with a readable name / rarity / $/second label.
 - **Mutations:** every spawn can roll Emas ×2 (8%), Berlian ×3 (3%) or
   Pelangi ×5 (1%) — a ★ badge on the label and multiplied income.
-- **4 random events** (~every 90 s): Hujan Dodol (2× income), Tung Tung Rush
+- **5 random events** (~every 90 s): Hujan Dodol (2× income), Tung Tung Rush
   (rare spawns flood the belt), Satpol Raid (get home or lose 10% cash),
-  Tamu Istimewa (a lone Secret walks the belt).
+  Tamu Istimewa (a lone Secret walks the belt), Banjir Bandang (a flood
+  wall sweeps the street — caught off-plot, lose 10% cash).
 - **Steal + lock + slap, rebirth, slot upgrades** — all real in the code.
 - **World:** night market street, fence, side stalls, stage, string lights,
   gate, lamps, carts, trees, dodol crates — 96 Place instances.

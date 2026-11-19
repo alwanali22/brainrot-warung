@@ -74,6 +74,26 @@ function World.build()
 	end
 end
 
+-- Banjir Bandang wall: a big translucent sheet of flood water at the north
+-- end of the street. The event sweeps it south; it never collides, so it
+-- can pass through players and stalls while the penalty check runs in code.
+-- The wall spans the whole street width (70 studs) so there is no safe
+-- lane to walk around it — the only escape is getting back to your plot.
+function World.spawnFloodWall()
+	local wall = Instance.new("Part")
+	wall.Name = "BanjirWall"
+	wall.Shape = Enum.PartType.Block
+	wall.Size = V(70, 8, 2)
+	wall.Position = V(0, 4, -52)
+	wall.Color = C(40, 120, 255)
+	wall.Transparency = 0.35
+	wall.Material = Enum.Material.SmoothPlastic
+	wall.Anchored = true
+	wall.CanCollide = false
+	wall.Parent = workspace
+	return wall
+end
+
 -- World end: everything here is Anchored, so nothing drifts at runtime.
 
 return World

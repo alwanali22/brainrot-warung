@@ -25,6 +25,11 @@ Config.DodolDuration = 30
 Config.DodolMultiplier = 2
 Config.RaidWarn = 15
 Config.RaidLoss = 0.10
+-- Banjir Bandang: the flood wall waits FloodDelay, then sweeps the street
+-- over FloodDuration; anyone it catches off-plot loses FloodLoss of cash.
+Config.FloodDelay = 3
+Config.FloodDuration = 15
+Config.FloodLoss = 0.10
 Config.RebirthCash = 50000
 Config.RebirthMinBrainrots = 3
 Config.RebirthBonus = 0.5

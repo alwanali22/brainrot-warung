@@ -1,7 +1,9 @@
--- Events: one random event every ~90 seconds. Four kinds: Hujan Dodol doubles
+-- Events: one random event every ~90 seconds. Five kinds: Hujan Dodol doubles
 -- income, Tung Tung Rush floods the belt with rare spawns, Satpol Raid
--- punishes anyone caught off their plot, and Tamu Istimewa walks a Secret
--- down the belt alone. Every event announces itself on the HUD banner.
+-- punishes anyone caught off their plot, Tamu Istimewa walks a Secret
+-- down the belt alone, and Banjir Bandang sweeps a flood wall down the
+-- street — get home or lose 10% of your cash. Every event announces
+-- itself on the HUD banner.
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Config = require(Shared.Config)
 local BrainrotData = require(Shared.BrainrotData)
@@ -10,6 +12,7 @@ local State = require(script.Parent.State)
 local Factory = require(script.Parent.BrainrotFactory)
 local Conveyor = require(script.Parent.Conveyor)
 local Plots = require(script.Parent.Plots)
+local World = require(script.Parent.World)
 
 local Events = {}
 local announceRemote = nil
@@ -95,8 +98,38 @@ local function tamuIstimewa()
 	spawnBeltBrainrot(secrets[math.random(1, #secrets)], Config.ConveyorZ0 - 12)
 end
 
--- Four pickers, equal odds; the scheduler draws one every EventInterval.
-local EVENT_PICKERS = { hujanDodol, tungTungRush, satpolRaid, tamuIstimewa }
+-- Banjir Bandang: a market flash flood, not a beach tsunami. After a short
+-- warning the flood wall sweeps the whole street north to south; anyone it
+-- catches off their plot loses 10% of their cash, once per flood. The wall
+-- moves in 30 even steps so the sweep lasts exactly FloodDuration seconds.
+local function banjirBandang()
+	announce("BANJIR BANDANG! Air bah menyapu pasar — pulang ke plotmu atau kehilangan 10% cash!", Color3.fromRGB(60, 140, 255))
+	task.wait(Config.FloodDelay)
+	local wall = World.spawnFloodWall()
+	local penalized = {}
+	local steps = 30
+	for step = 1, steps do
+		local wallZ = -52 + (104 * step / steps)
+		wall.Position = Vector3.new(0, 4, wallZ)
+		for player, d in pairs(State.Players) do
+			if not penalized[player] then
+				local char = player.Character
+				local root = char and char:FindFirstChild("HumanoidRootPart")
+				local home = d.plotId and Plots.padCenter(d.plotId)
+				if root and home and math.abs(root.Position.Z - wallZ) < 4
+					and (root.Position - home).Magnitude > 10 then
+					d.cash = math.floor(d.cash * (1 - Config.FloodLoss))
+					penalized[player] = true
+				end
+			end
+		end
+		task.wait(Config.FloodDuration / steps)
+	end
+	wall:Destroy()
+end
+
+-- Five pickers, equal odds; the scheduler draws one every EventInterval.
+local EVENT_PICKERS = { hujanDodol, tungTungRush, satpolRaid, tamuIstimewa, banjirBandang }
 
 function Events.start()
 	task.spawn(function()
