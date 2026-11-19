@@ -6,6 +6,7 @@
 local Config = require(game:GetService("ReplicatedStorage").Shared.Config)
 local State = require(script.Parent.State)
 local Plots = require(script.Parent.Plots)
+local World = require(script.Parent.World)
 
 local Steal = {}
 
@@ -109,6 +110,27 @@ function Steal.slap(player)
 			local thiefRoot = thiefChar and thiefChar:FindFirstChild("HumanoidRootPart")
 			if thiefRoot and (thiefRoot.Position - root.Position).Magnitude < Config.SlapRange then
 				thiefRoot.AssemblyLinearVelocity = (thiefRoot.Position - root.Position).Unit * 40 + Vector3.new(0, 20, 0)
+				-- Slap feedback: a gold particle burst where the thief stood,
+				-- plus the slap sound. The burst part is invisible and gone
+				-- in a second; only the particles show.
+				local burst = Instance.new("Part")
+				burst.Name = "SlapBurst"
+				burst.Size = Vector3.new(1, 1, 1)
+				burst.Position = thiefRoot.Position
+				burst.Transparency = 1
+				burst.Anchored = true
+				burst.CanCollide = false
+				burst.Parent = workspace
+				local emitter = Instance.new("ParticleEmitter")
+				emitter.Color = ColorSequence.new(Color3.fromRGB(255, 210, 60))
+				emitter.Size = NumberSequence.new(1)
+				emitter.Lifetime = NumberRange.new(0.5)
+				emitter.Speed = NumberRange.new(15)
+				emitter.SpreadAngle = Vector2.new(90, 90)
+				emitter.Rate = 200
+				emitter.Parent = burst
+				game:GetService("Debris"):AddItem(burst, 1)
+				World.playSound("SlapSfx")
 				Steal.returnToOwner(item)
 			end
 		end

@@ -47,6 +47,7 @@ end
 
 local function hujanDodol()
 	State.EventMultiplier = Config.DodolMultiplier
+	World.setDodolRain(true)
 	announce("HUJAN DODOL! Income 2x selama 30 detik!", Color3.fromRGB(255, 210, 60))
 	for i = 1, 20 do
 		local p = Instance.new("Part")
@@ -61,6 +62,7 @@ local function hujanDodol()
 	end
 	task.delay(Config.DodolDuration, function()
 		State.EventMultiplier = 1
+		World.setDodolRain(false)
 	end)
 end
 

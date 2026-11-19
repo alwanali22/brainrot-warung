@@ -4,6 +4,7 @@
 -- server validates every request.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
 local BrainrotData = require(ReplicatedStorage.Shared.BrainrotData)
 local player = Players.LocalPlayer
 local remotes = ReplicatedStorage:WaitForChild("Remotes")
@@ -71,7 +72,12 @@ end)
 remotes:WaitForChild("EventAnnounce").OnClientEvent:Connect(function(text, color)
 	banner.Text = text
 	banner.TextColor3 = color
+	-- The banner pops in small and tweens out to full width (Back easing),
+	-- so an event announcement lands with a visible punch, then hides
+	-- after 5 seconds as before.
+	banner.Size = UDim2.new(0, 100, 0, 40)
 	banner.Visible = true
+	TweenService:Create(banner, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.new(0, 500, 0, 40) }):Play()
 	task.delay(5, function()
 		banner.Visible = false
 	end)

@@ -72,6 +72,36 @@ function World.build()
 	for i, xz in ipairs({ { -27, 0 }, { 27, 0 }, { -27, 36 }, { 27, 36 } }) do
 		part(workspace, "DodolCrate" .. i, V(1.2, 1.2, 1.2), V(xz[1], 0.6, xz[2]), crateColors[(i % 2) + 1])
 	end
+
+	-- Sound effects: one folder, one Sound each, played by World.playSound.
+	local sfx = Instance.new("Folder")
+	sfx.Name = "Sfx"
+	sfx.Parent = workspace
+	local slap = Instance.new("Sound")
+	slap.Name = "SlapSfx"
+	slap.SoundId = "rbxasset://sounds/button.wav"
+	slap.Volume = 0.7
+	slap.Parent = sfx
+	local chime = Instance.new("Sound")
+	chime.Name = "ChimeSfx"
+	chime.SoundId = "rbxasset://sounds/electronicpingshort.wav"
+	chime.Volume = 0.7
+	chime.Parent = sfx
+
+	-- Dodol rain cloud: an invisible slab high over the street with a
+	-- brown particle emitter. Off by default; Hujan Dodol turns it on, and
+	-- the event turns it off again when the income bonus ends.
+	local cloud = part(workspace, "DodolRainCloud", V(60, 1, 100), V(0, 45, 0), C(150, 90, 40))
+	cloud.Transparency = 1
+	cloud.CanCollide = false
+	local rain = Instance.new("ParticleEmitter")
+	rain.Color = ColorSequence.new(C(150, 90, 40))
+	rain.Size = NumberSequence.new(0.8)
+	rain.Lifetime = NumberRange.new(2, 3)
+	rain.Speed = NumberRange.new(25)
+	rain.EmissionDirection = Enum.NormalId.Bottom
+	rain.Rate = 0
+	rain.Parent = cloud
 end
 
 -- Banjir Bandang wall: a big translucent sheet of flood water at the north
@@ -92,6 +122,25 @@ function World.spawnFloodWall()
 	wall.CanCollide = false
 	wall.Parent = workspace
 	return wall
+end
+
+-- Play one of the Sfx sounds by name; silently does nothing if it is missing.
+function World.playSound(name)
+	local sfx = workspace:FindFirstChild("Sfx")
+	local sound = sfx and sfx:FindFirstChild(name)
+	if sound then
+		sound:Play()
+	end
+end
+
+-- Turn the dodol rain on (80/s) or off (0). The cloud stays invisible;
+-- only the falling brown particles show.
+function World.setDodolRain(on)
+	local cloud = workspace:FindFirstChild("DodolRainCloud")
+	local emitter = cloud and cloud:FindFirstChildOfClass("ParticleEmitter")
+	if emitter then
+		emitter.Rate = on and 80 or 0
+	end
 end
 
 -- World end: everything here is Anchored, so nothing drifts at runtime.

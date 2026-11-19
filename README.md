@@ -22,6 +22,9 @@ Warung") for a permanent income multiplier and a new base skin.
 - **Buku Warung:** a collection book in the HUD — owned / 16 and seen / 16,
   tracked on the server (belt spawns count as seen, buys and steals count
   as owned).
+- **Effects:** dodol rain particles during Hujan Dodol, a gold burst + slap
+  sound on a successful slap, gold confetti + chime on rebirth, and a
+  tweened event banner.
 - **World:** night market street, fence, side stalls, stage, string lights,
   gate, lamps, carts, trees, dodol crates — 96 Place instances.
 

@@ -122,7 +122,10 @@ SurfaceAppearances — the Open Cloud publish requirements hold.
 - **Rebirth "Naik Kelas Warung" (server/Rebirth)**: needs cash + at least 3
   brainrots; resets cash + brainrots, adds a permanent +0.5 multiplier,
   and re-skins the base (Kayu → Bata → Neon → Istana Dodol).
-- **Buku Warung (server/State + server/Conveyor + server/Steal + HUD)**:
+- **Effects (server/World + server/Steal + server/Rebirth + HUD)**: a dodol
+  rain cloud (brown particles, on only during Hujan Dodol), a gold particle
+  burst + slap sound on a successful slap, gold confetti + chime on
+  rebirth, and the event banner tweening in from small (Back easing).
   a collection book — every belt spawn marks the character as seen for all
   players, every buy or successful steal marks it as owned; the HUD shows
   "Buku Warung <owned>/16 - Lihat <seen>/16".
