@@ -19,6 +19,9 @@ Warung") for a permanent income multiplier and a new base skin.
   Tamu Istimewa (a lone Secret walks the belt), Banjir Bandang (a flood
   wall sweeps the street — caught off-plot, lose 10% cash).
 - **Steal + lock + slap, rebirth, slot upgrades** — all real in the code.
+- **Buku Warung:** a collection book in the HUD — owned / 16 and seen / 16,
+  tracked on the server (belt spawns count as seen, buys and steals count
+  as owned).
 - **World:** night market street, fence, side stalls, stage, string lights,
   gate, lamps, carts, trees, dodol crates — 96 Place instances.
 

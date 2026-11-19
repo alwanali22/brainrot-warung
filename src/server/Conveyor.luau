@@ -22,6 +22,11 @@ function Conveyor.spawnOne()
 	prompt.Triggered:Connect(function(player)
 		Conveyor.buyBrainrot(player, id)
 	end)
+	-- Buku Warung: the belt is public, so every player in the server has
+	-- now seen this character walk past.
+	for player in pairs(State.Players) do
+		State.markSeen(player, char.key)
+	end
 	State.Conveyor[id] = {
 		id = id, charKey = char.key, name = char.name, tier = char.tier,
 		price = char.price, income = Mutations.mutatedIncome(char, mutation),
@@ -60,6 +65,8 @@ function Conveyor.buyBrainrot(player, id)
 	end
 	d.cash -= item.price
 	item.owner = player
+	-- Buku Warung: buying is owning — the character joins the buyer's book.
+	State.markOwned(player, item.charKey)
 	require(script.Parent.Plots).placeBrainrot(player, item)
 end
 

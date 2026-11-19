@@ -4,6 +4,7 @@
 -- server validates every request.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local BrainrotData = require(ReplicatedStorage.Shared.BrainrotData)
 local player = Players.LocalPlayer
 local remotes = ReplicatedStorage:WaitForChild("Remotes")
 
@@ -47,7 +48,11 @@ end
 local cashLabel = label(gui, "Cash", "$100", UDim2.new(0, 220, 0, 50), UDim2.new(0.5, -110, 0, 10), Color3.fromRGB(255, 210, 60))
 local incomeLabel = label(gui, "Income", "$0/dtk", UDim2.new(0, 220, 0, 30), UDim2.new(0.5, -110, 0, 65), Color3.fromRGB(140, 230, 140))
 local rebirthLabel = label(gui, "Rebirth", "Warung Kayu x1.0", UDim2.new(0, 220, 0, 30), UDim2.new(0.5, -110, 0, 100), Color3.fromRGB(255, 180, 220))
-local banner = label(gui, "Banner", "", UDim2.new(0, 500, 0, 40), UDim2.new(0.5, -250, 0, 140), Color3.fromRGB(255, 210, 60))
+-- Buku Warung: owned / total, and how many of the cast the player has seen.
+-- The banner moved down to y=175 to make room for this line under Rebirth.
+local totalCharacters = #BrainrotData.Characters
+local bukuLabel = label(gui, "Buku", "Buku Warung 0/" .. tostring(totalCharacters) .. " - Lihat 0/" .. tostring(totalCharacters), UDim2.new(0, 220, 0, 30), UDim2.new(0.5, -110, 0, 135), Color3.fromRGB(140, 220, 255))
+local banner = label(gui, "Banner", "", UDim2.new(0, 500, 0, 40), UDim2.new(0.5, -250, 0, 175), Color3.fromRGB(255, 210, 60))
 banner.Visible = false
 local listLabel = label(gui, "PlotList", "Plot kosong", UDim2.new(0, 200, 0, 120), UDim2.new(0, 10, 0, 120), Color3.fromRGB(220, 220, 220))
 
@@ -55,11 +60,12 @@ button(gui, "RebirthBtn", "REBIRTH (R)", UDim2.new(1, -170, 1, -60), "Rebirth")
 button(gui, "LockBtn", "LOCK (L)", UDim2.new(1, -170, 1, -120), "Lock")
 button(gui, "SlotBtn", "TAMBAH SLOT", UDim2.new(1, -170, 1, -180), "AddSlot")
 
-remotes:WaitForChild("HudUpdate").OnClientEvent:Connect(function(cash, income, mult, rebirths, names)
+remotes:WaitForChild("HudUpdate").OnClientEvent:Connect(function(cash, income, mult, rebirths, names, ownedCount, seenCount)
 	cashLabel.Text = "$" .. tostring(math.floor(cash))
 	incomeLabel.Text = "$" .. tostring(math.floor(income)) .. "/dtk"
 	rebirthLabel.Text = "Rebirth " .. tostring(rebirths) .. "  x" .. string.format("%.1f", mult)
 	listLabel.Text = #names == 0 and "Plot kosong" or table.concat(names, "\n")
+	bukuLabel.Text = "Buku Warung " .. tostring(ownedCount or 0) .. "/" .. tostring(totalCharacters) .. " - Lihat " .. tostring(seenCount or 0) .. "/" .. tostring(totalCharacters)
 end)
 
 remotes:WaitForChild("EventAnnounce").OnClientEvent:Connect(function(text, color)

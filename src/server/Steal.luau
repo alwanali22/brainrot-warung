@@ -69,6 +69,9 @@ function Steal.deliver(thief, item, victim)
 	item.carriedBy = nil
 	d.carrying = nil
 	item.owner = thief
+	-- Buku Warung: a stolen brainrot counts as owned once it lands home —
+	-- the thief earned it by carrying it all the way back.
+	State.markOwned(thief, item.charKey)
 	Plots.placeBrainrot(thief, item)
 	if victim then
 		Steal.lockBase(victim, false)

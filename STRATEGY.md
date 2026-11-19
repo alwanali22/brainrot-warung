@@ -122,6 +122,10 @@ SurfaceAppearances — the Open Cloud publish requirements hold.
 - **Rebirth "Naik Kelas Warung" (server/Rebirth)**: needs cash + at least 3
   brainrots; resets cash + brainrots, adds a permanent +0.5 multiplier,
   and re-skins the base (Kayu → Bata → Neon → Istana Dodol).
+- **Buku Warung (server/State + server/Conveyor + server/Steal + HUD)**:
+  a collection book — every belt spawn marks the character as seen for all
+  players, every buy or successful steal marks it as owned; the HUD shows
+  "Buku Warung <owned>/16 - Lihat <seen>/16".
 - **Random events (server/Events)**: one every ~90 s — Hujan Dodol (2×
   income for 30 s + dodol falling from the sky), Tung Tung Rush (rare
   spawns up for 60 s + 3 rare spawns at once), Satpol Raid (15 s warning,
@@ -134,8 +138,9 @@ SurfaceAppearances — the Open Cloud publish requirements hold.
   RULES.txt); F = slap, L = lock, R = rebirth. E is left alone so the buy
   ProximityPrompt still receives it.
 - **HUD (client/HUD)**: big cash top-centre (far from Roblox's top-left menu
-  buttons), $/second, rebirth + multiplier, event banner, Rebirth / Lock /
-  Tambah Slot buttons, and the plot's brainrot list.
+  buttons), $/second, rebirth + multiplier, the Buku Warung book (owned/seen
+  out of 16), event banner, Rebirth / Lock / Tambah Slot buttons, and the
+  plot's brainrot list.
 
 ## 6. Code layout (criterion 5)
 

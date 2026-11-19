@@ -58,7 +58,9 @@ for _, p in ipairs(Players:GetPlayers()) do
 	onJoin(p)
 end
 
--- HUD push, once a second: cash, income, multiplier, rebirths, plot list.
+-- HUD push, once a second: cash, income, multiplier, rebirths, plot list,
+-- plus the Buku Warung counts (owned, seen) as extra args. The counts ride
+-- the same remote so the book never needs its own round trip.
 -- One remote, one push: the client never asks for numbers.
 task.spawn(function()
 	while true do
@@ -67,7 +69,8 @@ task.spawn(function()
 			for _, item in ipairs(State.plotBrainrots(player)) do
 				table.insert(names, item.name)
 			end
-			remotes.HudUpdate:FireClient(player, d.cash, State.totalIncome(player), d.multiplier, d.rebirths, names)
+			local ownedCount, seenCount = State.bookCounts(player)
+			remotes.HudUpdate:FireClient(player, d.cash, State.totalIncome(player), d.multiplier, d.rebirths, names, ownedCount, seenCount)
 		end
 		task.wait(1)
 	end
