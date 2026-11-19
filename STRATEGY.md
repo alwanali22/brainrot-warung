@@ -2,7 +2,7 @@
 
 Bounty: roblox-brainrot-01 — "Make the best AI Roblox brainrot game", $1.000,
 50 places. Repo: https://github.com/alwanali22/brainrot-warung — entry:
-"BRAINROT WARUNG — Pasar Brainrot: 16 brainrots, steal, lock, slap, rebirth,
+"BRAINROT WARUNG — Pasar Brainrot: 24 brainrots, steal, lock, slap, rebirth,
 mutations, 5 events, banjir bandang". Deadline submit: 20 Nov 2026, 21:30 WIB. Status: the
 game is built and verified in the VM (Rojo, recorded session); first publish
 + real screenshots + icon/thumbnail + submit wait for the Studio session on
@@ -35,7 +35,7 @@ just in a picture.
 - The top 10 is dominated by "Brainrot Bay / Bazaar / Tsunami" clones — the
   same beach/tsunami take on Steal a Brainrot, over and over.
 - Our opening: a **different setting and visual identity** (an Indonesian
-  night market / warung, not a generic beach) + **16 characters** (more than
+  night market / warung, not a generic beach) + **24 characters** (more than
   rank 10's 14) + **mutations** (Emas/Berlian/Pelangi, ×2/×3/×5) + **five
   random events with different jobs** (income, spawns, hazard, Secret,
   flood wall) +
@@ -57,7 +57,7 @@ every ~90 seconds**.
 Why it wins on the judge's criteria:
 - K1: the full loop fits one frame — conveyor + buy + plot + $/second
   ticking on the HUD + the next tier on display in the showcase.
-- K2: 16 named Italian-brainrot characters, 7 tiers, each model built from
+- K2: 24 named Italian-brainrot characters, 7 tiers, each model built from
   Parts + a BillboardGui label (name, coloured rarity, $/second) readable
   from far away; rare mutations add a ★ badge and more income.
 - K3: steal + 30 s lock + slap + 5 events (Hujan Dodol = 2× income;
@@ -71,26 +71,34 @@ Why it wins on the judge's criteria:
 - K5: one job per module; one state store (server/State); RemoteEvents as
   the only client-server bridge.
 
-## 4. Cast — 16 characters, 7 tiers
+## 4. Cast — 24 characters, 7 tiers
 
 | # | Character | Tier | Price | $/second |
 |---|-----------|------|-------|----------|
 | 1 | Chimpanzini Bananini | Common | $50 | $1 |
-| 2 | Lirili Larila | Common | $150 | $3 |
-| 3 | Trippi Troppi | Rare | $400 | $7 |
-| 4 | Frigo Camelo | Rare | $900 | $15 |
-| 5 | Ballerina Cappuccina | Epic | $2.000 | $30 |
-| 6 | Cappuccino Assassino | Epic | $3.000 | $45 |
-| 7 | Boneca Ambalabu | Epic | $4.500 | $60 |
-| 8 | Tralalero Tralala | Legendary | $10.000 | $130 |
-| 9 | Brr Brr Patapim | Legendary | $16.000 | $190 |
-| 10 | Bombardiro Crocodilo | Legendary | $22.000 | $260 |
-| 11 | Giraffa Celeste | Mythic | $50.000 | $550 |
-| 12 | Frulli Frulla | Mythic | $75.000 | $800 |
-| 13 | La Vaca Saturno Saturnita | Mythic | $110.000 | $1.100 |
-| 14 | Pot Hotspot | Brainrot God | $250.000 | $2.400 |
-| 15 | Tung Tung Tung Sahur | Secret | $600.000 | $6.000 |
-| 16 | Glorbo Fruttodrillo | Secret | $900.000 | $9.000 |
+| 2 | Pipi Kiwi | Common | $100 | $2 |
+| 3 | Lirili Larila | Common | $150 | $3 |
+| 4 | Cacto Hipopotamo | Rare | $250 | $5 |
+| 5 | Trippi Troppi | Rare | $400 | $7 |
+| 6 | Frigo Camelo | Rare | $900 | $15 |
+| 7 | Ballerina Cappuccina | Epic | $2.000 | $30 |
+| 8 | Cappuccino Assassino | Epic | $3.000 | $45 |
+| 9 | Chicleteira Bicicleteira | Epic | $3.800 | $55 |
+| 10 | Boneca Ambalabu | Epic | $4.500 | $60 |
+| 11 | Graipuss Medussi | Epic | $6.500 | $85 |
+| 12 | Tralalero Tralala | Legendary | $10.000 | $130 |
+| 13 | Los Tralaleritos | Legendary | $13.000 | $160 |
+| 14 | Brr Brr Patapim | Legendary | $16.000 | $190 |
+| 15 | Bombardiro Crocodilo | Legendary | $22.000 | $260 |
+| 16 | Giraffa Celeste | Mythic | $50.000 | $550 |
+| 17 | Frulli Frulla | Mythic | $75.000 | $800 |
+| 18 | Las Tralaleritas | Mythic | $90.000 | $950 |
+| 19 | La Vaca Saturno Saturnita | Mythic | $110.000 | $1.100 |
+| 20 | Pot Hotspot | Brainrot God | $250.000 | $2.400 |
+| 21 | Los Combinasionas | Brainrot God | $400.000 | $4.000 |
+| 22 | Tung Tung Tung Sahur | Secret | $600.000 | $6.000 |
+| 23 | Chimpanzini Spiderini | Secret | $750.000 | $7.500 |
+| 24 | Glorbo Fruttodrillo | Secret | $900.000 | $9.000 |
 
 Mutations (shared/Mutations): each conveyor spawn rolls one — Emas ×2 (8%),
 Berlian ×3 (3%), Pelangi ×5 (1%). A mutation adds a "★ EMAS / BERLIAN /
@@ -128,7 +136,7 @@ SurfaceAppearances — the Open Cloud publish requirements hold.
   rebirth, and the event banner tweening in from small (Back easing).
   a collection book — every belt spawn marks the character as seen for all
   players, every buy or successful steal marks it as owned; the HUD shows
-  "Buku Warung <owned>/16 - Lihat <seen>/16".
+  "Buku Warung <owned>/24 - Lihat <seen>/24".
 - **Random events (server/Events)**: one every ~90 s — Hujan Dodol (2×
   income for 30 s + dodol falling from the sky), Tung Tung Rush (rare
   spawns up for 60 s + 3 rare spawns at once), Satpol Raid (15 s warning,
@@ -142,14 +150,14 @@ SurfaceAppearances — the Open Cloud publish requirements hold.
   ProximityPrompt still receives it.
 - **HUD (client/HUD)**: big cash top-centre (far from Roblox's top-left menu
   buttons), $/second, rebirth + multiplier, the Buku Warung book (owned/seen
-  out of 16), event banner, Rebirth / Lock / Tambah Slot buttons, and the
+  out of 24), event banner, Rebirth / Lock / Tambah Slot buttons, and the
   plot's brainrot list.
 
 ## 6. Code layout (criterion 5)
 
 ```
 src/shared/Config.luau        — constants, remote names, event/rebirth tuning
-src/shared/BrainrotData.luau  — 16 characters + 7 tiers + spawn weights
+src/shared/BrainrotData.luau  — 24 characters + 7 tiers + spawn weights
 src/shared/Mutations.luau     — mutations Emas/Berlian/Pelangi (×2/×3/×5) + roll
 src/server/init.server.luau   — wiring: remotes, player join/leave, main loops
 src/server/World.luau         — builds the 3D world at runtime (street, lamps, carts)

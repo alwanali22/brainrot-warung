@@ -10,7 +10,7 @@ steal from your plot — carry the catch home, or slap the thief (F) to knock
 it loose. Lock your base (L), upgrade plot slots, and rebirth ("Naik Kelas
 Warung") for a permanent income multiplier and a new base skin.
 
-- **16 brainrots, 7 tiers** (Common → Secret), each a 3D model built from
+- **24 brainrots, 7 tiers** (Common → Secret), each a 3D model built from
   Parts with a readable name / rarity / $/second label.
 - **Mutations:** every spawn can roll Emas ×2 (8%), Berlian ×3 (3%) or
   Pelangi ×5 (1%) — a ★ badge on the label and multiplied income.
@@ -19,7 +19,7 @@ Warung") for a permanent income multiplier and a new base skin.
   Tamu Istimewa (a lone Secret walks the belt), Banjir Bandang (a flood
   wall sweeps the street — caught off-plot, lose 10% cash).
 - **Steal + lock + slap, rebirth, slot upgrades** — all real in the code.
-- **Buku Warung:** a collection book in the HUD — owned / 16 and seen / 16,
+- **Buku Warung:** a collection book in the HUD — owned / 24 and seen / 24,
   tracked on the server (belt spawns count as seen, buys and steals count
   as owned).
 - **Effects:** dodol rain particles during Hujan Dodol, a gold burst + slap

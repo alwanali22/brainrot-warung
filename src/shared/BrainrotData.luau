@@ -1,7 +1,9 @@
--- BrainrotData: the cast. 16 Italian-brainrot characters on 7 rarity tiers,
+-- BrainrotData: the cast. 24 Italian-brainrot characters on 7 rarity tiers,
 -- each built 3D from primitive Parts. One row = one model: key, name, tier,
 -- price, income per second, body/accent colours, and 6–8 Parts.
 -- A part is { shape, size, offset, colour }: shape Block/Ball/Wedge/Cylinder.
+-- Prices rise down the table and income tracks price at roughly 1–2%,
+-- so a later tier is always strictly better $/second than the one before.
 local V = Vector3.new
 local C = Color3.fromRGB
 
@@ -28,6 +30,15 @@ BrainrotData.Characters = {
 			{ "Ball", V(0.4, 0.4, 0.4), V(-0.5, 3.1, 0.8), C(20, 20, 20) },
 			{ "Ball", V(0.4, 0.4, 0.4), V(0.5, 3.1, 0.8), C(20, 20, 20) },
 		} },
+	{ key = "pipikiwi", name = "Pipi Kiwi", tier = "Common", price = 100, income = 2,
+		body = C(120, 160, 60), accent = C(100, 70, 40), parts = {
+			{ "Ball", V(2, 1.8, 2), V(0, 1.4, 0), C(120, 160, 60) },
+			{ "Ball", V(1.4, 1.4, 1.4), V(0, 2.8, 0.3), C(120, 160, 60) },
+			{ "Wedge", V(0.8, 0.6, 1), V(0, 2.8, 1.2), C(255, 200, 60) },
+			{ "Block", V(0.4, 1, 0.4), V(-0.8, 0.5, 0), C(100, 70, 40) },
+			{ "Block", V(0.4, 1, 0.4), V(0.8, 0.5, 0), C(100, 70, 40) },
+			{ "Ball", V(0.4, 0.4, 0.4), V(-0.4, 3, 1), C(20, 20, 20) },
+		} },
 	{ key = "lirili", name = "Lirili Larila", tier = "Common", price = 150, income = 3,
 		body = C(220, 190, 140), accent = C(90, 160, 220), parts = {
 			{ "Cylinder", V(2, 2.2, 2), V(0, 1.6, 0), C(220, 190, 140) },
@@ -36,6 +47,15 @@ BrainrotData.Characters = {
 			{ "Block", V(0.4, 1, 0.4), V(-1.2, 1.4, 0), C(220, 190, 140) },
 			{ "Block", V(0.4, 1, 0.4), V(1.2, 1.4, 0), C(220, 190, 140) },
 			{ "Ball", V(0.5, 0.5, 0.5), V(0, 3.6, 0.7), C(90, 160, 220) },
+		} },
+	{ key = "cacto", name = "Cacto Hipopotamo", tier = "Rare", price = 250, income = 5,
+		body = C(60, 160, 90), accent = C(230, 140, 170), parts = {
+			{ "Block", V(2.6, 1.8, 2), V(0, 1.4, 0), C(60, 160, 90) },
+			{ "Ball", V(1.6, 1.6, 1.6), V(0, 3, 0.4), C(60, 160, 90) },
+			{ "Wedge", V(0.6, 1, 0.6), V(-0.9, 3.8, 0), C(230, 140, 170) },
+			{ "Wedge", V(0.6, 1, 0.6), V(0.9, 3.8, 0), C(230, 140, 170) },
+			{ "Block", V(0.5, 1, 0.5), V(-1.2, 0.5, 0.6), C(60, 160, 90) },
+			{ "Block", V(0.5, 1, 0.5), V(1.2, 0.5, 0.6), C(60, 160, 90) },
 		} },
 	{ key = "trippi", name = "Trippi Troppi", tier = "Rare", price = 400, income = 7,
 		body = C(90, 140, 200), accent = C(255, 240, 200), parts = {
@@ -73,6 +93,15 @@ BrainrotData.Characters = {
 			{ "Block", V(0.5, 1.4, 0.5), V(1.3, 2, 0), C(240, 230, 210) },
 			{ "Wedge", V(0.4, 1.2, 1), V(0, 3.8, -1.2), C(90, 60, 40) },
 		} },
+	{ key = "chicleteira", name = "Chicleteira Bicicleteira", tier = "Epic", price = 3800, income = 55,
+		body = C(255, 120, 180), accent = C(255, 255, 255), parts = {
+			{ "Cylinder", V(2, 2, 2), V(0, 1.5, 0), C(255, 120, 180) },
+			{ "Ball", V(1.5, 1.5, 1.5), V(0, 3, 0), C(255, 120, 180) },
+			{ "Cylinder", V(0.5, 1.4, 0.5), V(-1.4, 1.2, 0), C(255, 255, 255) },
+			{ "Cylinder", V(0.5, 1.4, 0.5), V(1.4, 1.2, 0), C(255, 255, 255) },
+			{ "Wedge", V(0.6, 1, 1), V(0, 3, -1.1), C(255, 255, 255) },
+			{ "Ball", V(0.5, 0.5, 0.5), V(0, 4, 0), C(255, 255, 255) },
+		} },
 	{ key = "boneca", name = "Boneca Ambalabu", tier = "Epic", price = 4500, income = 60,
 		body = C(200, 120, 160), accent = C(255, 220, 150), parts = {
 			{ "Block", V(2, 2.2, 1.8), V(0, 1.6, 0), C(200, 120, 160) },
@@ -82,6 +111,15 @@ BrainrotData.Characters = {
 			{ "Wedge", V(1.2, 1, 1), V(0, 3.2, -1.1), C(255, 220, 150) },
 			{ "Ball", V(0.7, 0.7, 0.7), V(0, 4.2, 0), C(255, 220, 150) },
 		} },
+	{ key = "graipuss", name = "Graipuss Medussi", tier = "Epic", price = 6500, income = 85,
+		body = C(140, 90, 200), accent = C(255, 200, 80), parts = {
+			{ "Ball", V(2.4, 1.8, 2.4), V(0, 2.2, 0), C(140, 90, 200) },
+			{ "Ball", V(1.2, 1.2, 1.2), V(0, 3.6, 0), C(140, 90, 200) },
+			{ "Cylinder", V(0.4, 1.6, 0.4), V(-1, 1.2, 0), C(255, 200, 80) },
+			{ "Cylinder", V(0.4, 1.6, 0.4), V(0, 1.2, 0), C(255, 200, 80) },
+			{ "Cylinder", V(0.4, 1.6, 0.4), V(1, 1.2, 0), C(255, 200, 80) },
+			{ "Ball", V(0.5, 0.5, 0.5), V(-0.5, 3.8, 0.6), C(20, 20, 20) },
+		} },
 	{ key = "tralalero", name = "Tralalero Tralala", tier = "Legendary", price = 10000, income = 130,
 		body = C(90, 130, 180), accent = C(240, 240, 240), parts = {
 			{ "Block", V(2, 1.6, 4.4), V(0, 1.4, 0), C(90, 130, 180) },
@@ -90,6 +128,15 @@ BrainrotData.Characters = {
 			{ "Ball", V(1.2, 1.2, 1.2), V(0, 2.4, 1.6), C(90, 130, 180) },
 			{ "Block", V(0.8, 0.5, 1), V(0, 2, 2.4), C(240, 240, 240) },
 			{ "Block", V(0.4, 1, 0.4), V(-1.1, 0.5, 0), C(90, 130, 180) },
+		} },
+	{ key = "tralaleritos", name = "Los Tralaleritos", tier = "Legendary", price = 13000, income = 160,
+		body = C(90, 130, 180), accent = C(255, 255, 255), parts = {
+			{ "Block", V(1.8, 1.4, 3.6), V(0, 1.2, 0), C(90, 130, 180) },
+			{ "Block", V(1.6, 1.2, 3), V(1.6, 1.1, 0.4), C(110, 150, 200) },
+			{ "Wedge", V(1, 1, 1), V(0, 1.2, 2.2), C(90, 130, 180) },
+			{ "Ball", V(1, 1, 1), V(0, 2.1, 1.4), C(90, 130, 180) },
+			{ "Ball", V(0.9, 0.9, 0.9), V(1.6, 2, 1.6), C(110, 150, 200) },
+			{ "Wedge", V(0.8, 1.2, 0.5), V(0, 2.2, 0), C(255, 255, 255) },
 		} },
 	{ key = "patapim", name = "Brr Brr Patapim", tier = "Legendary", price = 16000, income = 190,
 		body = C(150, 180, 120), accent = C(220, 180, 120), parts = {
@@ -127,6 +174,15 @@ BrainrotData.Characters = {
 			{ "Wedge", V(1, 1.6, 0.6), V(-1.2, 3.6, 0), C(180, 200, 220) },
 			{ "Wedge", V(1, 1.6, 0.6), V(1.2, 3.6, 0), C(180, 200, 220) },
 		} },
+	{ key = "tralaleritas", name = "Las Tralaleritas", tier = "Mythic", price = 90000, income = 950,
+		body = C(200, 120, 200), accent = C(255, 220, 90), parts = {
+			{ "Block", V(2, 1.6, 3.6), V(0, 1.4, 0), C(200, 120, 200) },
+			{ "Ball", V(1.2, 1.2, 1.2), V(0, 2.4, 1.2), C(200, 120, 200) },
+			{ "Wedge", V(1.2, 1, 1), V(0, 1.4, 2.2), C(200, 120, 200) },
+			{ "Block", V(2.4, 0.4, 1), V(-1.2, 2.2, 0), C(255, 220, 90) },
+			{ "Block", V(2.4, 0.4, 1), V(1.2, 2.2, 0), C(255, 220, 90) },
+			{ "Ball", V(0.5, 0.5, 0.5), V(-0.4, 2.6, 1.8), C(20, 20, 20) },
+		} },
 	{ key = "lavaca", name = "La Vaca Saturno Saturnita", tier = "Mythic", price = 110000, income = 1100,
 		body = C(240, 240, 240), accent = C(200, 160, 90), parts = {
 			{ "Block", V(2.4, 1.8, 3), V(0, 1.4, 0), C(240, 240, 240) },
@@ -145,6 +201,15 @@ BrainrotData.Characters = {
 			{ "Block", V(0.5, 1.2, 0.5), V(-1.2, 0.6, 0), C(200, 60, 50) },
 			{ "Block", V(0.5, 1.2, 0.5), V(1.2, 0.6, 0), C(200, 60, 50) },
 		} },
+	{ key = "combinacionas", name = "Los Combinasionas", tier = "Brainrot God", price = 400000, income = 4000,
+		body = C(220, 120, 50), accent = C(255, 220, 100), parts = {
+			{ "Block", V(2.4, 2, 2.4), V(0, 1.5, 0), C(220, 120, 50) },
+			{ "Ball", V(1.6, 1.6, 1.6), V(0, 3.1, 0), C(220, 120, 50) },
+			{ "Cylinder", V(0.6, 1.8, 0.6), V(-1.4, 2, 0), C(255, 220, 100) },
+			{ "Cylinder", V(0.6, 1.8, 0.6), V(1.4, 2, 0), C(255, 220, 100) },
+			{ "Wedge", V(1.2, 1, 1), V(0, 3.1, -1.2), C(255, 220, 100) },
+			{ "Ball", V(0.6, 0.6, 0.6), V(0, 4.2, 0), C(255, 220, 100) },
+		} },
 	{ key = "tungtung", name = "Tung Tung Tung Sahur", tier = "Secret", price = 600000, income = 6000,
 		body = C(140, 95, 55), accent = C(230, 200, 150), parts = {
 			{ "Block", V(1.6, 3, 1.6), V(0, 2, 0), C(140, 95, 55) },
@@ -153,6 +218,15 @@ BrainrotData.Characters = {
 			{ "Block", V(2, 0.4, 0.4), V(1.4, 2.8, 0), C(230, 200, 150) },
 			{ "Ball", V(0.4, 0.4, 0.4), V(-0.4, 4.1, 0.6), C(20, 20, 20) },
 			{ "Ball", V(0.4, 0.4, 0.4), V(0.4, 4.1, 0.6), C(20, 20, 20) },
+		} },
+	{ key = "spiderini", name = "Chimpanzini Spiderini", tier = "Secret", price = 750000, income = 7500,
+		body = C(90, 60, 40), accent = C(220, 60, 60), parts = {
+			{ "Block", V(2.2, 1.6, 2), V(0, 1.3, 0), C(90, 60, 40) },
+			{ "Ball", V(1.5, 1.5, 1.5), V(0, 2.8, 0), C(90, 60, 40) },
+			{ "Cylinder", V(0.4, 1.6, 0.4), V(-1.5, 1.2, 0.8), C(220, 60, 60) },
+			{ "Cylinder", V(0.4, 1.6, 0.4), V(1.5, 1.2, 0.8), C(220, 60, 60) },
+			{ "Cylinder", V(0.4, 1.6, 0.4), V(-1.5, 1.2, -0.8), C(220, 60, 60) },
+			{ "Cylinder", V(0.4, 1.6, 0.4), V(1.5, 1.2, -0.8), C(220, 60, 60) },
 		} },
 	{ key = "glorbo", name = "Glorbo Fruttodrillo", tier = "Secret", price = 900000, income = 9000,
 		body = C(80, 200, 90), accent = C(255, 220, 80), parts = {
